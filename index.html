@@ -1,90 +1,2088 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>AudioBridge Receiver - AM / AudioBridge</title>
-                <style>
-                        * { box-sizing: border-box; }
-                                body {
-                                            margin: 0; min-height: 100vh; background: #101418; color: #e8edf2;
-                                                        font-family: Arial, sans-serif; display: flex; justify-content: center;
-                                                                    align-items: center; padding: 20px;
-                                                                            }
-                                                                                    .panel {
-                                                                                                width: 100%; max-width: 560px; background: #1b2229;
-                                                                                                            border: 1px solid #39444e; border-radius: 12px; padding: 24px;
-                                                                                                                    }
-                                                                                                                            h1 { margin: 0 0 6px; font-size: 25px; letter-spacing: 1px; }
-                                                                                                                                    .subtitle { color: #9eabb6; font-size: 13px; margin-bottom: 24px; }
-                                                                                                                                            .server-config { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
-                                                                                                                                                    .server-config label { color: #9eabb6; font-size: 12px; font-weight: bold; }
-                                                                                                                                                            .server-config input {
-                                                                                                                                                                        background: #11171c; border: 1px solid #303b44; border-radius: 6px;
-                                                                                                                                                                                    padding: 10px; color: #4ade80; font-family: Consolas, monospace; font-size: 13px;
-                                                                                                                                                                                            }
-                                                                                                                                                                                                    .status-box {
-                                                                                                                                                                                                                background: #11171c; border: 1px solid #303b44; border-radius: 8px;
-                                                                                                                                                                                                                            padding: 14px; margin-bottom: 18px;
-                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                            .status-line { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 9px; font-size: 14px; }
-                                                                                                                                                                                                                                                    .status-line:last-child { margin-bottom: 0; }
-                                                                                                                                                                                                                                                            .label { color: #9eabb6; }
-                                                                                                                                                                                                                                                                    .value { font-weight: bold; text-align: right; }
-                                                                                                                                                                                                                                                                            .online { color: #4ade80; }
-                                                                                                                                                                                                                                                                                    .offline { color: #ff6b6b; }
-                                                                                                                                                                                                                                                                                            .warning { color: #facc15; }
-                                                                                                                                                                                                                                                                                                    .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-bottom: 22px; }
-                                                                                                                                                                                                                                                                                                            button { border: 0; border-radius: 7px; padding: 13px 7px; font-size: 12px; font-weight: bold; cursor: pointer; color: white; }
-                                                                                                                                                                                                                                                                                                                    button:disabled { opacity: 0.35; cursor: not-allowed; }
-                                                                                                                                                                                                                                                                                                                            #connectButton { background: #2563eb; }
-                                                                                                                                                                                                                                                                                                                                    #playButton { background: #16a34a; }
-                                                                                                                                                                                                                                                                                                                                            #pauseButton { background: #ca8a04; }
-                                                                                                                                                                                                                                                                                                                                                    #disconnectButton { background: #dc2626; }
-                                                                                                                                                                                                                                                                                                                                                            .meter-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #9eabb6; }
-                                                                                                                                                                                                                                                                                                                                                                    .db-value { color: #4ade80; font-weight: bold; }
-                                                                                                                                                                                                                                                                                                                                                                            .meter { height: 28px; background: #080b0e; border: 1px solid #303b44; border-radius: 5px; overflow: hidden; display: flex; gap: 2px; padding: 4px; }
-                                                                                                                                                                                                                                                                                                                                                                                    .meter-bar { flex: 1; background: #26313a; border-radius: 2px; }
-                                                                                                                                                                                                                                                                                                                                                                                            .meter-bar.green { background: #22c55e; }
-                                                                                                                                                                                                                                                                                                                                                                                                    .meter-bar.yellow { background: #eab308; }
-                                                                                                                                                                                                                                                                                                                                                                                                            .meter-bar.red { background: #ef4444; }
-                                                                                                                                                                                                                                                                                                                                                                                                                    .scale { display: flex; justify-content: space-between; color: #6f7d88; font-size: 10px; margin-top: 5px; }
-                                                                                                                                                                                                                                                                                                                                                                                                                            .log-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                    .log-actions button { background: #334155; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                            .log { margin-top: 8px; background: #080b0e; border: 1px solid #303b44; border-radius: 7px; padding: 12px; height: 165px; overflow-y: auto; font-family: Consolas, monospace; font-size: 12px; color: #b8c4ce; white-space: pre-wrap; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    @media (max-width: 500px) { .buttons { grid-template-columns: repeat(2, 1fr); } }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        </style>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        </head>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        <body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="panel">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <h1>AUDIOBRIDGE RECEIVER — AM</h1>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="subtitle">Live audio receiver and monitor</div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#061a3a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>GMA Radio Davao</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#020817;color:#fff;font-family:Arial,Helvetica,sans-serif}
+body{
+  min-height:100vh;overflow-x:hidden;
+  background:
+    radial-gradient(circle at 50% 8%,rgba(0,116,255,.30),transparent 34%),
+    radial-gradient(circle at 90% 70%,rgba(0,210,255,.10),transparent 30%),
+    linear-gradient(180deg,#031127 0%,#061d42 55%,#020817 100%);
+}
+.app{width:100%;max-width:520px;min-height:100vh;margin:auto;position:relative;padding-bottom:34px}
+.bg-wave{position:fixed;left:-10%;right:-10%;bottom:-90px;height:230px;border-radius:50%;border-top:2px solid rgba(0,174,255,.45);box-shadow:0 -25px 90px rgba(0,115,255,.18);transform:rotate(-4deg);pointer-events:none}
+.header{padding:24px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px}
+.brand img{width:54px;height:54px;border-radius:12px;object-fit:cover;background:#fff}
+.brand h1{font-size:18px;margin:0 0 4px}
+.brand p{font-size:11px;color:#9fb9d9;margin:0}
+.live{display:flex;align-items:center;gap:6px;color:#ff3148;font-size:11px;font-weight:800;letter-spacing:1px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#ff2340;box-shadow:0 0 12px #ff2340;animation:pulse 1.3s infinite}
+@keyframes pulse{50%{opacity:.35;transform:scale(.7)}}
+.tabs{display:flex;margin:18px 20px 16px;padding:5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:15px}
+.tab{flex:1;border:0;background:transparent;color:#8da9ce;padding:12px;border-radius:11px;font-weight:800;cursor:pointer}
+.tab.active{color:#fff;background:linear-gradient(135deg,#0787ff,#0054ca);box-shadow:0 7px 25px rgba(0,91,255,.28)}
+.card{margin:0 20px;padding:24px;border-radius:28px;background:linear-gradient(145deg,rgba(15,50,92,.96),rgba(2,17,38,.98));border:1px solid rgba(105,181,255,.20);box-shadow:0 25px 70px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.08)}
+.art-wrap{display:flex;justify-content:center;margin:2px 0 20px}
+.art{width:190px;height:190px;border-radius:25px;object-fit:cover;background:#071b36;box-shadow:0 15px 50px rgba(0,0,0,.52),0 0 35px rgba(0,115,255,.16)}
+.info{text-align:center}
+.info .state{font-size:11px;color:#ff3048;font-weight:800;letter-spacing:1.8px;margin-bottom:8px}
+.info h2{font-size:21px;margin:0 0 7px}
+.freq{font-size:14px;color:#78b9ff;font-weight:700}
+.program{margin-top:9px;color:#c9d9ed;font-size:13px}
+.wave{height:62px;margin:21px 0 14px;display:flex;align-items:center;justify-content:center;gap:3px;overflow:hidden}
+.wave-bar{width:3px;height:10px;border-radius:5px;background:linear-gradient(180deg,#49b8ff,#0071ff);animation:wave .85s ease-in-out infinite alternate}
+@keyframes wave{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.controls{display:flex;justify-content:center}
+.play{width:76px;height:76px;border:0;border-radius:50%;background:#fff;color:#061a3a;font-size:25px;font-weight:800;cursor:pointer;box-shadow:0 10px 35px rgba(0,0,0,.45)}
+.play:active{transform:scale(.93)}
+.volume{display:flex;align-items:center;gap:11px;margin-top:20px}
+.volume input{width:100%;accent-color:#1185ff}
+.connection{text-align:center;margin-top:14px;font-size:11px;color:#7897bc}
+.connection.ok{color:#43df9d}.connection.err{color:#ff6070}
+.footer{text-align:center;margin-top:24px;color:#5d7da5;font-size:10px;letter-spacing:.6px}
+.hidden-engine{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+@media(min-width:700px){.app{padding-top:18px}}
+</style>
+</head>
+<body>
+<div class="bg-wave"></div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="server-config">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <label for="serverInput">SERVER WEBSOCKET URL</label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <input type="text" id="serverInput" spellcheck="false" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <img src="assets/gma_logo.webp" alt="GMA Radio">
+      <div>
+        <h1>GMA Radio Davao</h1>
+        <p>Live Audio Streaming</p>
+      </div>
+    </div>
+    <div class="live"><span class="live-dot"></span>LIVE</div>
+  </header>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="status-box">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="status-line"><span class="label">Server</span><span id="serverStatus" class="value offline">Disconnected</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="status-line"><span class="label">Audio Engine</span><span id="audioStatus" class="value offline">Stopped</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="status-line"><span class="label">Audio Format</span><span id="formatStatus" class="value">Waiting for stream</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="status-line"><span class="label">Received Packets</span><span id="packetCount" class="value">0</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="status-line"><span class="label">Received Bytes</span><span id="byteCount" class="value">0</span></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+  <div class="tabs">
+    <button class="tab active" id="uiAmTab">AM</button>
+    <button class="tab" id="uiFmTab">FM</button>
+  </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="buttons">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button id="connectButton">CONNECT</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <button id="playButton" disabled>PLAY</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button id="pauseButton" disabled>PAUSE</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button id="disconnectButton" disabled>DISCONNECT</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+  <section class="card">
+    <div class="art-wrap">
+      <img class="art" id="uiStationArt" src="assets/notif_am.png" alt="Station">
+    </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="meter-header">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <span>RECEIVED AUDIO LEVEL</span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span id="dbValue" class="db-value">-60 dB</span>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+    <div class="info">
+      <div class="state">🔴 LIVE</div>
+      <h2 id="uiStationName">GMA Super Radyo Davao</h2>
+      <div class="freq" id="uiFrequency">DXGM 1125 kHz</div>
+      <div class="program" id="uiProgram">Dapat Totoo</div>
+    </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div id="meter" class="meter"></div>
+    <div class="wave" id="uiWave"></div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div c
+    <div class="controls">
+      <button class="play" id="uiPlayButton" aria-label="Play or pause">▶</button>
+    </div>
+
+    <div class="volume">
+      <span>🔊</span>
+      <input id="uiVolume" type="range" min="0" max="1" step=".01" value="1" aria-label="Volume">
+    </div>
+
+    <div id="uiConnection" class="connection">Ready to stream</div>
+  </section>
+
+  <footer class="footer">GMA NETWORK INC. • Dapat Totoo</footer>
+</div>
+
+<!-- Original receiver controls are hidden; their audio/codec engine remains intact. -->
+<div class="hidden-engine" aria-hidden="true">
+  <input id="serverInput">
+  <button id="connectButton">CONNECT</button>
+  <button id="playButton">PLAY</button>
+  <button id="pauseButton">PAUSE</button>
+  <button id="disconnectButton">DISCONNECT</button>
+  <div id="serverStatus"></div>
+  <div id="audioStatus"></div>
+  <div id="formatStatus"></div>
+  <div id="packetCount"></div>
+  <div id="byteCount"></div>
+  <div id="meter"></div>
+  <div id="dbValue"></div>
+  <div id="log"></div>
+  <button id="copyLogButton"></button>
+  <button id="downloadLogButton"></button>
+  <button id="clearLogButton"></button>
+</div>
+
+<script>
+
+        "use strict";
+
+        /*
+         * ============================================================
+         * AUDIOBRIDGE GENERIC RECEIVER
+         * ============================================================
+         *
+         * Supported:
+         *
+         *   Codec 1 = PCM16
+         *   Codec 2 = Opus
+         *   Codec 3 = AAC
+         *   Codec 4 = MP3
+         *   Codec 6 = WAV
+         *
+         * GMA1 header:
+         *
+         *   0-3   Magic       GMA1
+         *   4     Version     1
+         *   5     Codec
+         *   6     Flags
+         *   7     Channels
+         *   8-11  Sequence
+         *   12-15 Sample Rate
+         *   16-19 Payload Length
+         *   20+   Payload
+         *
+         * ============================================================
+         */
+
+        const AB_MAGIC = "GMA1";
+        const AB_VERSION = 1;
+        const AB_HEADER_SIZE = 20;
+
+        const CODEC_IDS = {
+            1: "PCM16",
+            2: "Opus",
+            3: "AAC",
+            4: "MP3",
+            6: "WAV"
+        };
+
+        const BYTES_PER_SAMPLE = 2;
+
+const stations = {
+    AM: {
+        name: "GMA Super Radyo Davao",
+        frequency: "DXGM 1125 kHz",
+        program: "Dapat Totoo",
+        socket: "wss://amfm-live.up.railway.app/amrx",
+        artwork: "assets/notif_am.png"
+    },
+    FM: {
+        name: "GMA FM Davao",
+        frequency: "FM",
+        program: "Live FM",
+        socket: "wss://amfm-live.up.railway.app/fmrx",
+        artwork: "assets/notif_fm.png"
+    }
+};
+
+let currentStation = "AM";
+
+
+        let SAMPLE_RATE = 44100;
+        let CHANNELS = 2;
+        let CURRENT_CODEC = "PCM16";
+
+        const serverInput = document.getElementById("serverInput");
+        const connectButton = document.getElementById("connectButton");
+        const playButton = document.getElementById("playButton");
+        const pauseButton = document.getElementById("pauseButton");
+        const disconnectButton = document.getElementById("disconnectButton");
+        const serverStatus = document.getElementById("serverStatus");
+        const audioStatus = document.getElementById("audioStatus");
+        const formatStatus = document.getElementById("formatStatus");
+        const packetCountElement = document.getElementById("packetCount");
+        const byteCountElement = document.getElementById("byteCount");
+        const meterElement = document.getElementById("meter");
+        const dbValue = document.getElementById("dbValue");
+        const logElement = document.getElementById("log");
+        const copyLogButton = document.getElementById("copyLogButton");
+        const downloadLogButton = document.getElementById("downloadLogButton");
+        const clearLogButton = document.getElementById("clearLogButton");
+
+        function getDefaultServerUrl() {
+            return stations[currentStation].socket;
+        }
+
+        serverInput.value = getDefaultServerUrl();
+
+        let socket = null;
+        let audioContext = null;
+        let analyser = null;
+        let gainNode = null;
+        let audioStarted = false;
+
+        let nextAudioTime = 0;
+
+        /*
+         * Long-running live-stream playback:
+         *
+         * The previous version scheduled every decoded AudioBuffer immediately.
+         * That works at first, but small network/decode timing variations can
+         * eventually create underruns.  Keep a small decoded-audio jitter
+         * buffer and continuously schedule only a limited amount ahead.
+         */
+        /*
+         * Railway/public WebSocket delivery can arrive in short bursts.
+         * A larger bounded buffer prevents the stream from repeatedly
+         * draining when delivery/decode timing varies by a second or so.
+         */
+        const JITTER_START_SEC = 1.00;
+        const JITTER_TARGET_SEC = 1.50;
+        const JITTER_MAX_SEC = 3.00;
+        const JITTER_PUMP_MS = 50;
+
+        let decodedQueue = [];
+        let decodedQueueDuration = 0;
+        let playbackPrimed = false;
+        let jitterPumpTimer = null;
+
+        let decoderFrameLogCounter = 0;
+        let lastDecoderFrameLogTime = 0;
+
+        let packetCount = 0;
+        let byteCount = 0;
+
+        let meterBars = [];
+        let activeSources = new Set();
+        let animationFrame = null;
+
+        let audioDecoder = null;
+        let decoderCodec = null;
+        let decoderSampleRate = 0;
+        let decoderChannels = 0;
+
+        // Compressed decoder timing state.
+        // Sequence numbers are used only as packet ordering identifiers;
+        // timestamps are generated from codec-native frame durations.
+        let decoderBaseSequence = null;
+        let decoderSequence = 0;
+        let decoderPacketDurationUs = 20000;
+        let decoderNeedsKeyFrame = true;
+
+        // The active receiver always learns its format from the server.
+        // GMA1 packet headers are authoritative; AM and FM do not share
+        // a hard-coded codec assumption.
+        let streamCodec = null;
+        let streamCodecId = null;
+        let streamFormatSequence = null;
+
+        // WebSocket messages can arrive faster than an async WebCodecs
+        // operation completes. Serialize packet processing so compressed
+        // packets cannot be decoded/configured out of order.
+        let packetProcessingChain = Promise.resolve();
+
+        let sessionLog = "";
+
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            const line = `[${time}] ${message}`;
+
+            sessionLog += (sessionLog ? "\n" : "") + line;
+
+            /*
+             * Keep diagnostics bounded during 24/7 operation. The audio
+             * pipeline must never retain an ever-growing log in memory.
+             */
+            const MAX_LOG_CHARS = 120000;
+            if (sessionLog.length > MAX_LOG_CHARS) {
+                sessionLog = sessionLog.slice(
+                    sessionLog.length - MAX_LOG_CHARS
+                );
+            }
+
+            logElement.textContent = sessionLog;
+            logElement.scrollTop = logElement.scrollHeight;
+
+            console.log(line);
+        }
+
+        async function copyLogs() {
+            try {
+                await navigator.clipboard.writeText(sessionLog);
+                log("Log copied to clipboard.");
+            } catch (error) {
+                const area = document.createElement("textarea");
+                area.value = sessionLog;
+                document.body.appendChild(area);
+                area.select();
+
+                try {
+                    document.execCommand("copy");
+                    log("Log copied to clipboard.");
+                } catch (copyError) {
+                    log("Could not copy log: " + copyError.message);
+                }
+
+                area.remove();
+            }
+        }
+
+        function downloadLogs() {
+            const stamp = new Date()
+                .toISOString()
+                .replace(/[:.]/g, "-");
+
+            const blob = new Blob(
+                [sessionLog],
+                { type: "text/plain;charset=utf-8" }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+
+            a.href = url;
+            a.download = `AudioBridge_Receiver_${stamp}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            URL.revokeObjectURL(url);
+        }
+
+        function clearLogs() {
+            sessionLog = "";
+            logElement.textContent = "";
+            log("Log cleared.");
+        }
+
+        function setStatus(element, text, className) {
+            element.textContent = text;
+            element.className = `value ${className}`;
+        }
+
+        function createMeter() {
+            meterElement.innerHTML = "";
+            meterBars = [];
+
+            for (let i = 0; i < 40; i++) {
+                const bar = document.createElement("div");
+
+                bar.className = "meter-bar";
+
+                meterElement.appendChild(bar);
+                meterBars.push(bar);
+            }
+        }
+
+        function updateMeter(level, db) {
+            const activeBars = Math.round(level * meterBars.length);
+
+            meterBars.forEach((bar, index) => {
+                bar.className = "meter-bar";
+
+                if (index < activeBars) {
+                    if (index >= meterBars.length * 0.90) {
+                        bar.classList.add("red");
+                    } else if (index >= meterBars.length * 0.70) {
+                        bar.classList.add("yellow");
+                    } else {
+                        bar.classList.add("green");
+                    }
+                }
+            });
+
+            dbValue.textContent = `${db.toFixed(1)} dB`;
+
+            if (db > -3) {
+                dbValue.style.color = "#ef4444";
+            } else if (db > -12) {
+                dbValue.style.color = "#eab308";
+            } else {
+                dbValue.style.color = "#4ade80";
+            }
+        }
+
+        function resetMeter() {
+            updateMeter(0, -60);
+        }
+
+        function startMeterAnimation() {
+            if (animationFrame) return;
+
+            function drawMeter() {
+                if (!analyser) {
+                    resetMeter();
+                    animationFrame = null;
+                    return;
+                }
+
+                const data = new Float32Array(analyser.fftSize);
+
+                analyser.getFloatTimeDomainData(data);
+
+                let sum = 0;
+
+                for (let i = 0; i < data.length; i++) {
+                    sum += data[i] * data[i];
+                }
+
+                const rms = Math.sqrt(sum / data.length);
+
+                let db = -60;
+
+                if (rms > 0.00001) {
+                    db = 20 * Math.log10(rms);
+                }
+
+                db = Math.max(-60, Math.min(0, db));
+
+                const level = (db + 60) / 60;
+
+                if (audioStarted) {
+                    updateMeter(level, db);
+                } else {
+                    resetMeter();
+                }
+
+                animationFrame = requestAnimationFrame(drawMeter);
+            }
+
+            animationFrame = requestAnimationFrame(drawMeter);
+        }
+
+        function createAudioEngine() {
+            if (audioContext) return;
+
+            const AudioContextClass =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if (!AudioContextClass) {
+                throw new Error("Web Audio API is not supported.");
+            }
+
+            /*
+             * Do NOT force 44100 Hz here.
+             *
+             * The browser chooses its native output rate and
+             * Web Audio automatically resamples AudioBuffers.
+             */
+            audioContext = new AudioContextClass();
+
+            analyser = audioContext.createAnalyser();
+
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.75;
+
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = 1;
+            gainNode.connect(analyser);
+            analyser.connect(audioContext.destination);
+
+            startMeterAnimation();
+
+            log(`Audio engine active: ${audioContext.sampleRate} Hz output`);
+        }
+
+        function stopAllSources() {
+            for (const source of activeSources) {
+                try {
+                    source.stop();
+                } catch (error) {}
+            }
+
+            activeSources.clear();
+        }
+
+        function clearDecodedJitterBuffer() {
+            decodedQueue.length = 0;
+            decodedQueueDuration = 0;
+            playbackPrimed = false;
+            nextAudioTime = 0;
+        }
+
+        function resetPlaybackPipeline() {
+            stopAllSources();
+            clearDecodedJitterBuffer();
+        }
+
+        function scheduleDecodedBuffer(audioBuffer) {
+            if (!audioStarted || !audioContext || !audioBuffer) {
+                return;
+            }
+
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(gainNode || analyser);
+
+            activeSources.add(source);
+            source.onended = () => activeSources.delete(source);
+
+            const now = audioContext.currentTime;
+
+            /*
+             * If the browser has already caught up with our schedule, this is
+             * a genuine underrun. Re-prime instead of trying to schedule into
+             * the past.
+             */
+            if (nextAudioTime < now) {
+                playbackPrimed = false;
+                nextAudioTime = now + 0.08;
+            }
+
+            source.start(nextAudioTime);
+            nextAudioTime += audioBuffer.duration;
+        }
+
+        function pumpDecodedJitterBuffer() {
+            if (!audioStarted || !audioContext) {
+                return;
+            }
+
+            const now = audioContext.currentTime;
+
+            /*
+             * Detect a playback underrun.  Leave incoming decoded audio in the
+             * queue and wait until enough audio has accumulated again.
+             */
+            if (playbackPrimed && nextAudioTime <= now + 0.01) {
+                playbackPrimed = false;
+                nextAudioTime = now + 0.08;
+            }
+
+            if (!playbackPrimed) {
+                if (decodedQueueDuration < JITTER_START_SEC) {
+                    return;
+                }
+
+                nextAudioTime = now + 0.10;
+                playbackPrimed = true;
+            }
+
+            /*
+             * Keep roughly 1.5 seconds scheduled ahead.  This absorbs short
+             * WebSocket/decode stalls without allowing an ever-growing
+             * schedule that becomes several seconds late.
+             */
+            const scheduleUntil =
+                audioContext.currentTime + JITTER_TARGET_SEC;
+
+            while (
+                decodedQueue.length &&
+                nextAudioTime < scheduleUntil
+            ) {
+                const audioBuffer = decodedQueue.shift();
+                decodedQueueDuration =
+                    Math.max(
+                        0,
+                        decodedQueueDuration - audioBuffer.duration
+                    );
+
+                scheduleDecodedBuffer(audioBuffer);
+            }
+
+            /*
+             * If an unusual burst made the decoded queue very large, trim only
+             * the excess tail. Never discard the already scheduled portion.
+             */
+            while (
+                decodedQueueDuration > JITTER_MAX_SEC &&
+                decodedQueue.length > 1
+            ) {
+                const dropped = decodedQueue.shift();
+                decodedQueueDuration =
+                    Math.max(
+                        0,
+                        decodedQueueDuration - dropped.duration
+                    );
+            }
+        }
+
+        function startJitterPump() {
+            if (jitterPumpTimer) return;
+
+            jitterPumpTimer = setInterval(
+                pumpDecodedJitterBuffer,
+                JITTER_PUMP_MS
+            );
+        }
+
+        function enqueueDecodedAudio(audioBuffer) {
+            if (!audioStarted || !audioBuffer) {
+                return;
+            }
+
+            decodedQueue.push(audioBuffer);
+            decodedQueueDuration += audioBuffer.duration;
+
+            pumpDecodedJitterBuffer();
+        }
+
+        function updateAudioFormat(codec, sampleRate, channels) {
+            CURRENT_CODEC = codec || CURRENT_CODEC;
+            SAMPLE_RATE = sampleRate || SAMPLE_RATE;
+            CHANNELS = channels || CHANNELS;
+
+            const channelText =
+                CHANNELS === 1 ? "Mono" :
+                CHANNELS === 2 ? "Stereo" :
+                `${CHANNELS} ch`;
+
+            formatStatus.textContent =
+                `${(SAMPLE_RATE / 1000).toFixed(1)} kHz / ${channelText} / ${CURRENT_CODEC}`;
+        }
+
+        function playAudioBuffer(audioBuffer) {
+            /*
+             * All codecs ultimately pass through the same decoded-audio
+             * jitter buffer.  This keeps AM and FM independent at the codec
+             * layer while giving both receivers stable long-running playback.
+             */
+            enqueueDecodedAudio(audioBuffer);
+        }
+
+        function convertPCMToAudioBuffer(
+            arrayBuffer,
+            sampleRate,
+            channels
+        ) {
+            if (!audioContext) {
+                return null;
+            }
+
+            if (!(arrayBuffer instanceof ArrayBuffer)) {
+                return null;
+            }
+
+            if (channels < 1) {
+                return null;
+            }
+
+            const bytesPerFrame =
+                channels * BYTES_PER_SAMPLE;
+
+            if (
+                arrayBuffer.byteLength === 0 ||
+                arrayBuffer.byteLength % bytesPerFrame !== 0
+            ) {
+                log(
+                    `Invalid PCM16 payload size: ${arrayBuffer.byteLength}`
+                );
+
+                return null;
+            }
+
+            const frameCount =
+                arrayBuffer.byteLength / bytesPerFrame;
+
+            const audioBuffer =
+                audioContext.createBuffer(
+                    channels,
+                    frameCount,
+                    sampleRate
+                );
+
+            const view = new DataView(arrayBuffer);
+
+            /*
+             * AudioBridge PCM16 is little-endian.
+             */
+            for (let channel = 0; channel < channels; channel++) {
+                const channelData =
+                    audioBuffer.getChannelData(channel);
+
+                for (let frame = 0; frame < frameCount; frame++) {
+                    const offset =
+                        (frame * channels + channel) * 2;
+
+                    const sample =
+                        view.getInt16(offset, true);
+
+                    channelData[frame] =
+                        sample / 32768.0;
+                }
+            }
+
+            return audioBuffer;
+        }
+
+        function playPCM(
+            arrayBuffer,
+            sampleRate,
+            channels
+        ) {
+            const audioBuffer =
+                convertPCMToAudioBuffer(
+                    arrayBuffer,
+                    sampleRate,
+                    channels
+                );
+
+            if (!audioBuffer) {
+                return;
+            }
+
+            playAudioBuffer(audioBuffer);
+        }
+
+        function playWAV(arrayBuffer) {
+            if (!audioContext || !arrayBuffer || arrayBuffer.byteLength < 44) {
+                return;
+            }
+
+            try {
+                /*
+                 * WAV packets from the transmitter are complete RIFF/WAVE
+                 * files. DecodeAudioData lets the browser handle the WAV
+                 * header, sample format, sample rate and channel count.
+                 */
+                audioContext.decodeAudioData(
+                    arrayBuffer.slice(0)
+                ).then((audioBuffer) => {
+                    if (!audioStarted) {
+                        return;
+                    }
+
+                    updateAudioFormat(
+                        "WAV",
+                        audioBuffer.sampleRate,
+                        audioBuffer.numberOfChannels
+                    );
+
+                    playAudioBuffer(audioBuffer);
+                }).catch((error) => {
+                    log("WAV decode error: " + error.message);
+                });
+
+            } catch (error) {
+                log("WAV decode error: " + error.message);
+            }
+        }
+
+        function audioDataToAudioBuffer(audioData) {
+            if (!audioContext || !audioData) {
+                return null;
+            }
+
+            const channels = audioData.numberOfChannels;
+            const frames = audioData.numberOfFrames;
+            const sampleRate = audioData.sampleRate;
+
+            /*
+             * IMPORTANT FOR LONG-RUN PLAYBACK:
+             * Do not update the visible log for every decoded audio frame.
+             * At 20 ms/frame this can mean ~50 DOM updates per second and
+             * the growing log string eventually causes browser GC/UI stalls.
+             */
+            if (audioData.format) {
+                decoderFrameLogCounter++;
+                const now = performance.now();
+
+                if (
+                    decoderFrameLogCounter === 1 ||
+                    decoderFrameLogCounter % 250 === 0 ||
+                    now - lastDecoderFrameLogTime > 5000
+                ) {
+                    lastDecoderFrameLogTime = now;
+                    log(
+                        `Decoded ${CURRENT_CODEC}: ` +
+                        `${sampleRate} Hz / ` +
+                        `${channels} ch / ` +
+                        `${frames} frames / ` +
+                        `${audioData.format}`
+                    );
+                }
+            }
+
+            if (
+                !channels ||
+                !frames ||
+                !sampleRate
+            ) {
+                return null;
+            }
+
+            const audioBuffer =
+                audioContext.createBuffer(
+                    channels,
+                    frames,
+                    sampleRate
+                );
+
+            /*
+             * Try to copy directly as Float32 planar.
+             */
+            try {
+                for (let channel = 0; channel < channels; channel++) {
+                    const destination =
+                        audioBuffer.getChannelData(channel);
+
+                    audioData.copyTo(
+                        destination,
+                        {
+                            planeIndex: channel,
+                            format: "f32-planar"
+                        }
+                    );
+                }
+
+                return audioBuffer;
+            } catch (error) {
+                /*
+                 * Some browsers expose a different AudioData
+                 * format. Fall back to manual conversion.
+                 */
+            }
+
+            try {
+                const format = audioData.format;
+
+                const bytesPerSample =
+                    format.includes("s16") ? 2 :
+                    format.includes("s32") ? 4 :
+                    4;
+
+                const planar =
+                    format.includes("planar");
+
+                if (planar) {
+                    for (let channel = 0; channel < channels; channel++) {
+                        const destination =
+                            audioBuffer.getChannelData(channel);
+
+                        const buffer =
+                            new ArrayBuffer(
+                                frames * bytesPerSample
+                            );
+
+                        audioData.copyTo(
+                            new Uint8Array(buffer),
+                            {
+                                planeIndex: channel
+                            }
+                        );
+
+                        const view = new DataView(buffer);
+
+                        for (let i = 0; i < frames; i++) {
+                            if (format.includes("s16")) {
+                                destination[i] =
+                                    view.getInt16(
+                                        i * 2,
+                                        true
+                                    ) / 32768;
+                            } else if (format.includes("s32")) {
+                                destination[i] =
+                                    view.getInt32(
+                                        i * 4,
+                                        true
+                                    ) / 2147483648;
+                            } else {
+                                destination[i] =
+                                    view.getFloat32(
+                                        i * 4,
+                                        true
+                                    );
+                            }
+                        }
+                    }
+
+                    return audioBuffer;
+                }
+
+                /*
+                 * Interleaved fallback.
+                 */
+                const buffer =
+                    new ArrayBuffer(
+                        frames *
+                        channels *
+                        bytesPerSample
+                    );
+
+                audioData.copyTo(
+                    new Uint8Array(buffer),
+                    {
+                        planeIndex: 0
+                    }
+                );
+
+                const view = new DataView(buffer);
+
+                for (let frame = 0; frame < frames; frame++) {
+                    for (let channel = 0; channel < channels; channel++) {
+                        const destination =
+                            audioBuffer.getChannelData(channel);
+
+                        const index =
+                            frame * channels + channel;
+
+                        if (format.includes("s16")) {
+                            destination[frame] =
+                                view.getInt16(
+                                    index * 2,
+                                    true
+                                ) / 32768;
+                        } else if (format.includes("s32")) {
+                            destination[frame] =
+                                view.getInt32(
+                                    index * 4,
+                                    true
+                                ) / 2147483648;
+                        } else {
+                            destination[frame] =
+                                view.getFloat32(
+                                    index * 4,
+                                    true
+                                );
+                        }
+                    }
+                }
+
+                return audioBuffer;
+
+            } catch (error) {
+                log(
+                    "AudioData conversion error: " +
+                    error.message
+                );
+
+                return null;
+            }
+        }
+
+        function handleDecodedAudio(audioData) {
+            try {
+                if (!audioStarted) {
+                    audioData.close();
+                    return;
+                }
+
+                const audioBuffer =
+                    audioDataToAudioBuffer(audioData);
+
+                audioData.close();
+
+                if (audioBuffer) {
+                    /*
+                     * The packet header already established the stream
+                     * format. Do not spam the DOM with another format update
+                     * for every decoded frame.
+                     */
+                    if (
+                        SAMPLE_RATE !== audioBuffer.sampleRate ||
+                        CHANNELS !== audioBuffer.numberOfChannels
+                    ) {
+                        updateAudioFormat(
+                            CURRENT_CODEC,
+                            audioBuffer.sampleRate,
+                            audioBuffer.numberOfChannels
+                        );
+                    }
+
+                    playAudioBuffer(audioBuffer);
+                }
+
+            } catch (error) {
+                try {
+                    audioData.close();
+                } catch (e) {}
+
+                log(
+                    "Decoded audio error: " +
+                    error.message
+                );
+            }
+        }
+
+        async function destroyDecoder() {
+            if (!audioDecoder) {
+                decoderCodec = null;
+                decoderSampleRate = 0;
+                decoderChannels = 0;
+                decoderBaseSequence = null;
+                decoderPacketDurationUs = 20000;
+                decoderNeedsKeyFrame = true;
+                return;
+            }
+
+            try {
+                if (audioDecoder.state !== "closed") {
+                    await audioDecoder.flush();
+                }
+            } catch (error) {}
+
+            try {
+                if (audioDecoder.state !== "closed") {
+                    audioDecoder.close();
+                }
+            } catch (error) {}
+
+            audioDecoder = null;
+            decoderCodec = null;
+            decoderSampleRate = 0;
+            decoderChannels = 0;
+            decoderBaseSequence = null;
+            decoderPacketDurationUs = 20000;
+            decoderNeedsKeyFrame = true;
+        }
+
+        function normalizeCodecName(codec) {
+            if (codec === "PCM") return "PCM16";
+            return codec;
+        }
+
+        async function adoptServerFormat(codec, codecId, sampleRate, channels, sequence) {
+            const normalizedCodec = normalizeCodecName(codec);
+            const changed =
+                streamCodec !== normalizedCodec ||
+                streamCodecId !== codecId ||
+                SAMPLE_RATE !== sampleRate ||
+                CHANNELS !== channels;
+
+            if (changed) {
+                const previous = streamCodec
+                    ? `${streamCodec} / ${SAMPLE_RATE} Hz / ${CHANNELS} ch`
+                    : "none";
+
+                streamCodec = normalizedCodec;
+                streamCodecId = codecId;
+                SAMPLE_RATE = Number(sampleRate);
+                CHANNELS = Number(channels);
+                streamFormatSequence = sequence;
+
+                // A codec/sample-rate/channel change belongs to a new
+                // decoder timeline. Never let the old decoder continue
+                // playing into the new stream.
+                /*
+                 * Flush/close the old decoder first so any final old decoded
+                 * frames are delivered before the playback queue is cleared.
+                 */
+                await destroyDecoder();
+
+                /*
+                 * A format change is a new playback timeline.  Do not allow
+                 * audio from the old codec/rate/channel configuration to
+                 * remain scheduled underneath the new stream.
+                 */
+                resetPlaybackPipeline();
+
+                updateAudioFormat(
+                    normalizedCodec,
+                    SAMPLE_RATE,
+                    CHANNELS
+                );
+
+                log(
+                    `[RECEIVER] Server format: ${normalizedCodec} ` +
+                    `(codec ${codecId}) / ${SAMPLE_RATE} Hz / ` +
+                    `${CHANNELS} ch / seq=${sequence}`
+                );
+
+                if (previous !== "none") {
+                    log(`[RECEIVER] Format changed from ${previous}`);
+                }
+            } else {
+                // Even when the format is unchanged, keep the UI tied to
+                // the format carried by the actual packet.
+                updateAudioFormat(
+                    normalizedCodec,
+                    Number(sampleRate),
+                    Number(channels)
+                );
+            }
+        }
+
+        function getAACCodecString(payload) {
+            /*
+             * ADTS AAC:
+             *
+             * If the payload starts with an ADTS sync word,
+             * the browser can usually identify AAC-LC from the
+             * ADTS header.
+             */
+            if (
+                payload &&
+                payload.length >= 2 &&
+                payload[0] === 0xFF &&
+                (payload[1] & 0xF6) === 0xF0
+            ) {
+                return "mp4a.40.2";
+            }
+
+            /*
+             * Default to AAC-LC.
+             */
+            return "mp4a.40.2";
+        }
+
+        async function createDecoder(
+            codec,
+            sampleRate,
+            channels,
+            firstPayload
+        ) {
+            if (!("AudioDecoder" in window)) {
+                throw new Error(
+                    "WebCodecs AudioDecoder is not supported by this browser."
+                );
+            }
+
+            let codecString;
+
+            if (codec === "Opus") {
+                codecString = "opus";
+            } else if (codec === "MP3") {
+                codecString = "mp3";
+            } else if (codec === "AAC") {
+                codecString = getAACCodecString(firstPayload);
+            } else if (codec === "WAV") {
+                throw new Error("WAV uses the native WAV decoder.");
+            } else {
+                throw new Error(
+                    `Unsupported compressed codec: ${codec}`
+                );
+            }
+
+            /*
+             * Reuse the decoder if the stream format has not changed.
+             */
+            if (
+                audioDecoder &&
+                decoderCodec === codecString &&
+                decoderSampleRate === sampleRate &&
+                decoderChannels === channels &&
+                audioDecoder.state === "configured"
+            ) {
+                return;
+            }
+
+            await destroyDecoder();
+
+            log(
+                `Creating ${codec} decoder: ` +
+                `${sampleRate} Hz / ${channels} ch / ${codecString}`
+            );
+
+            const support =
+                await AudioDecoder.isConfigSupported({
+                    codec: codecString,
+                    sampleRate: sampleRate,
+                    numberOfChannels: channels
+                });
+
+            if (!support.supported) {
+                throw new Error(
+                    `Browser does not support ${codec} ` +
+                    `${sampleRate} Hz / ${channels} ch`
+                );
+            }
+
+            audioDecoder =
+                new AudioDecoder({
+                    output: handleDecodedAudio,
+
+                    error: (error) => {
+                        log(
+                            `${codec} decoder error: ` +
+                            error.message
+                        );
+                    }
+                });
+
+            audioDecoder.configure({
+                codec: codecString,
+                sampleRate: sampleRate,
+                numberOfChannels: channels
+            });
+
+            decoderCodec = codecString;
+            decoderSampleRate = sampleRate;
+            decoderChannels = channels;
+            decoderNeedsKeyFrame = true;
+
+            log(`${codec} decoder READY.`);
+        }
+
+        async function playCompressed(
+            payload,
+            codec,
+            sampleRate,
+            channels,
+            sequence
+        ) {
+            if (!audioStarted) {
+                return;
+            }
+
+            if (!(payload instanceof Uint8Array)) {
+                return;
+            }
+
+            try {
+                // The packet has already been admitted by adoptServerFormat(),
+                // so this decoder is guaranteed to match the transmitted
+                // codec/rate/channel configuration.
+                const codecString =
+                    codec === "Opus"
+                        ? "opus"
+                        : codec === "MP3"
+                            ? "mp3"
+                            : codec === "AAC"
+                                ? getAACCodecString(payload)
+                                : codec;
+
+                const formatChanged =
+                    decoderCodec !== null &&
+                    (
+                        decoderCodec !== codecString ||
+                        decoderSampleRate !== sampleRate ||
+                        decoderChannels !== channels
+                    );
+
+                await createDecoder(
+                    codec,
+                    sampleRate,
+                    channels,
+                    payload
+                );
+
+                /*
+                 * WebCodecs timestamps are microseconds. Never assume every
+                 * compressed packet is 20 ms:
+                 *
+                 *   Opus = 20 ms
+                 *   AAC  = 1024 samples
+                 *   MP3  = 1152 samples
+                 *
+                 * A newly created decoder or a format transition starts a
+                 * fresh timestamp timeline at the current packet.
+                 */
+                if (formatChanged || decoderBaseSequence === null) {
+                    log(
+                        `Decoder timeline reset: ${codec} / ` +
+                        `${sampleRate} Hz / seq=${sequence}`
+                    );
+
+                    decoderBaseSequence = sequence;
+                    decoderSequence = sequence;
+
+                    if (codec === "AAC") {
+                        decoderPacketDurationUs =
+                            (1024 / sampleRate) * 1000000;
+                    } else if (codec === "MP3") {
+                        decoderPacketDurationUs =
+                            (1152 / sampleRate) * 1000000;
+                    } else if (codec === "Opus") {
+                        decoderPacketDurationUs = 20000;
+                    } else {
+                        decoderPacketDurationUs = 20000;
+                    }
+                }
+
+                /*
+                 * Unsigned subtraction handles the 32-bit sequence counter
+                 * wrapping from 0xFFFFFFFF back to 0.
+                 */
+                const packetOffset =
+                    (sequence - decoderBaseSequence) >>> 0;
+
+                const timestamp =
+                    packetOffset * decoderPacketDurationUs;
+
+                const chunk =
+                    new EncodedAudioChunk({
+                        type: decoderNeedsKeyFrame ? "key" : "delta",
+                        timestamp: Math.max(0, Math.round(timestamp)),
+                        duration: Math.max(
+                            1,
+                            Math.round(decoderPacketDurationUs)
+                        ),
+                        data: payload
+                    });
+
+                audioDecoder.decode(chunk);
+                decoderNeedsKeyFrame = false;
+
+            } catch (error) {
+                log(
+                    `${codec} decode error: ` +
+                    error.message
+                );
+            }
+        }
+
+        function parseGMA1Packet(arrayBuffer) {
+            if (
+                !(arrayBuffer instanceof ArrayBuffer) ||
+                arrayBuffer.byteLength < AB_HEADER_SIZE
+            ) {
+                return null;
+            }
+
+            const bytes =
+                new Uint8Array(arrayBuffer);
+
+            const magic =
+                String.fromCharCode(
+                    bytes[0],
+                    bytes[1],
+                    bytes[2],
+                    bytes[3]
+                );
+
+            if (magic !== AB_MAGIC) {
+                return null;
+            }
+
+            const view =
+                new DataView(arrayBuffer);
+
+            const version =
+                view.getUint8(4);
+
+            const codecId =
+                view.getUint8(5);
+
+            const flags =
+                view.getUint8(6);
+
+            const channels =
+                view.getUint8(7);
+
+            const sequence =
+                view.getUint32(8, false);
+
+            const sampleRate =
+                view.getUint32(12, false);
+
+            const payloadLength =
+                view.getUint32(16, false);
+
+            if (version !== AB_VERSION) {
+                throw new Error(
+                    `Unsupported AudioBridge version: ${version}`
+                );
+            }
+
+            const codec =
+                CODEC_IDS[codecId];
+
+            if (!codec) {
+                throw new Error(
+                    `Unknown AudioBridge codec ID: ${codecId}`
+                );
+            }
+
+            if (channels < 1 || channels > 8) {
+                throw new Error(
+                    `Invalid channel count: ${channels}`
+                );
+            }
+
+            if (sampleRate < 8000 || sampleRate > 192000) {
+                throw new Error(
+                    `Invalid sample rate: ${sampleRate}`
+                );
+            }
+
+            const expectedSize =
+                AB_HEADER_SIZE + payloadLength;
+
+            if (arrayBuffer.byteLength < expectedSize) {
+                throw new Error(
+                    `Incomplete packet: expected ${expectedSize}, ` +
+                    `received ${arrayBuffer.byteLength}`
+                );
+            }
+
+            const payload =
+                new Uint8Array(
+                    arrayBuffer,
+                    AB_HEADER_SIZE,
+                    payloadLength
+                );
+
+            return {
+                magic,
+                version,
+                codecId,
+                codec,
+                flags,
+                channels,
+                sequence,
+                sampleRate,
+                payloadLength,
+                payload
+            };
+        }
+
+        async function handleGMA1Packet(packet) {
+            // The codec in the GMA1 header is the source of truth for THIS
+            // receiver. Do not assume AM=PCM or FM=Opus/AAC/etc.
+            await adoptServerFormat(
+                packet.codec,
+                packet.codecId,
+                packet.sampleRate,
+                packet.channels,
+                packet.sequence
+            );
+
+            /*
+             * --------------------------------------------------------
+             * PCM16
+             * --------------------------------------------------------
+             */
+            if (packet.codec === "PCM16") {
+                /*
+                 * Copy payload so it becomes a standalone ArrayBuffer.
+                 */
+                const pcmBuffer =
+                    packet.payload.slice().buffer;
+
+                playPCM(
+                    pcmBuffer,
+                    packet.sampleRate,
+                    packet.channels
+                );
+
+                return;
+            }
+
+            /*
+             * --------------------------------------------------------
+             * WAV
+             * --------------------------------------------------------
+             *
+             * The transmitter sends a complete RIFF/WAVE file as the
+             * payload. Browser-native WAV decoding is used here.
+             */
+            if (packet.codec === "WAV") {
+                const wavBuffer = packet.payload.slice().buffer;
+                playWAV(wavBuffer);
+                return;
+            }
+
+            /*
+             * --------------------------------------------------------
+             * OPUS / AAC / MP3
+             * --------------------------------------------------------
+             */
+            if (
+                packet.codec === "Opus" ||
+                packet.codec === "AAC" ||
+                packet.codec === "MP3"
+            ) {
+                await playCompressed(
+                    packet.payload,
+                    packet.codec,
+                    packet.sampleRate,
+                    packet.channels,
+                    packet.sequence
+                );
+
+                return;
+            }
+
+            log(
+                `Unsupported codec: ${packet.codec}`
+            );
+        }
+
+        async function handleAudioPacket(arrayBuffer) {
+            /*
+             * First try the AudioBridge GMA1 protocol.
+             */
+            let packet = null;
+
+            try {
+                packet = parseGMA1Packet(arrayBuffer);
+            } catch (error) {
+                log(
+                    "AudioBridge packet error: " +
+                    error.message
+                );
+
+                return;
+            }
+
+            if (packet) {
+                await handleGMA1Packet(packet);
+                return;
+            }
+
+            /*
+             * --------------------------------------------------------
+             * LEGACY PCM16 FALLBACK
+             * --------------------------------------------------------
+             *
+             * If the server sends raw PCM16 without GMA1 framing,
+             * continue supporting the old receiver format.
+             */
+            if (
+                arrayBuffer.byteLength > 0 &&
+                arrayBuffer.byteLength %
+                (CHANNELS * BYTES_PER_SAMPLE) === 0
+            ) {
+                log(
+                    "Legacy raw PCM16 packet detected."
+                );
+
+                playPCM(
+                    arrayBuffer,
+                    SAMPLE_RATE,
+                    CHANNELS
+                );
+
+                return;
+            }
+
+            log(
+                "Unknown binary packet received."
+            );
+        }
+
+        async function playAudio() {
+            if (
+                !socket ||
+                socket.readyState !== WebSocket.OPEN
+            ) {
+                log("Connect to the server first.");
+                return;
+            }
+
+            try {
+                createAudioEngine();
+
+                if (audioContext.state === "suspended") {
+                    await audioContext.resume();
+                }
+
+                audioStarted = true;
+
+                /*
+                 * Start a fresh jitter timeline. Incoming packets will prime
+                 * the buffer before the first source is scheduled.
+                 */
+                resetPlaybackPipeline();
+                startJitterPump();
+
+                setStatus(
+                    audioStatus,
+                    "Playing",
+                    "online"
+                );
+
+                playButton.disabled = true;
+                pauseButton.disabled = false;
+
+                log("Audio playback started.");
+
+            } catch (error) {
+                log(
+                    "Audio engine error: " +
+                    error.message
+                );
+            }
+        }
+
+        async function pauseAudio() {
+            audioStarted = false;
+
+            resetPlaybackPipeline();
+
+            packetProcessingChain = Promise.resolve();
+            streamCodec = null;
+            streamCodecId = null;
+            streamFormatSequence = null;
+
+            await destroyDecoder();
+
+            if (
+                audioContext &&
+                audioContext.state === "running"
+            ) {
+                await audioContext.suspend();
+            }
+
+            setStatus(
+                audioStatus,
+                "Paused",
+                "warning"
+            );
+
+            playButton.disabled = false;
+            pauseButton.disabled = true;
+
+            resetMeter();
+
+            log("Audio playback paused.");
+        }
+
+        function connectToServer() {
+            if (
+                socket &&
+                socket.readyState === WebSocket.OPEN
+            ) {
+                return;
+            }
+
+            const targetUrl =
+                serverInput.value.trim();
+
+            if (!targetUrl) {
+                log("Enter a WebSocket URL.");
+                return;
+            }
+
+            log(
+                `Connecting to ${targetUrl}...`
+            );
+
+            setStatus(
+                serverStatus,
+                "Connecting...",
+                "warning"
+            );
+
+            try {
+                socket =
+                    new WebSocket(targetUrl);
+
+                socket.binaryType =
+                    "arraybuffer";
+
+            } catch (err) {
+                log(
+                    `Invalid URL error: ${err.message}`
+                );
+
+                setStatus(
+                    serverStatus,
+                    "Disconnected",
+                    "offline"
+                );
+
+                return;
+            }
+
+            socket.onopen = () => {
+                setStatus(
+                    serverStatus,
+                    "Connected",
+                    "online"
+                );
+
+                connectButton.disabled = true;
+                serverInput.disabled = true;
+
+                playButton.disabled = false;
+                pauseButton.disabled = true;
+
+                disconnectButton.disabled = false;
+
+                log(
+                    "Connected to AudioBridge server."
+                );
+
+                /*
+                 * Generic receiver registration.
+                 */
+                socket.send(
+                    JSON.stringify({
+                        type: "register-receiver"
+                    })
+                );
+            };
+
+            socket.onmessage = async (event) => {
+
+                /*
+                 * ----------------------------------------------------
+                 * JSON SERVER MESSAGE
+                 * ----------------------------------------------------
+                 */
+                if (typeof event.data === "string") {
+                    try {
+                        const message =
+                            JSON.parse(event.data);
+
+                        /*
+                         * Some AudioBridge server versions send
+                         * format information during registration.
+                         */
+                        if (
+                            message.codec ||
+                            message.format ||
+                            message.codecId ||
+                            message.sampleRate ||
+                            message.channels
+                        ) {
+                            if (message.sampleRate) {
+                                SAMPLE_RATE =
+                                    Number(
+                                        message.sampleRate
+                                    );
+                            }
+
+                            if (message.channels) {
+                                CHANNELS =
+                                    Number(
+                                        message.channels
+                                    );
+                            }
+
+                            const serverCodec =
+                                message.codec || message.format || null;
+                            const serverCodecId =
+                                message.codecId != null
+                                    ? Number(message.codecId)
+                                    : null;
+
+                            if (serverCodec) {
+                                const normalized =
+                                    normalizeCodecName(String(serverCodec));
+                                streamCodec = normalized;
+                                streamCodecId = serverCodecId;
+                                CURRENT_CODEC = normalized;
+                            }
+
+                            updateAudioFormat(
+                                CURRENT_CODEC,
+                                SAMPLE_RATE,
+                                CHANNELS
+                            );
+
+                            log(
+                                `[RECEIVER] Server advertised format: ` +
+                                `${CURRENT_CODEC} / ${SAMPLE_RATE} Hz / ${CHANNELS} ch`
+                            );
+                        }
+
+                        log(
+                            "Server message: " +
+                            (
+                                message.message ||
+                                JSON.stringify(message)
+                            )
+                        );
+
+                    } catch (e) {
+                        log(
+                            "Server text: " +
+                            event.data
+                        );
+                    }
+
+                    return;
+                }
+
+                /*
+                 * ----------------------------------------------------
+                 * BINARY AUDIO PACKET
+                 * ----------------------------------------------------
+                 */
+                let arrayBuffer;
+
+                try {
+                    arrayBuffer =
+                        event.data instanceof ArrayBuffer
+                            ? event.data
+                            : await event.data.arrayBuffer();
+
+                } catch (error) {
+                    log(
+                        "Unable to read binary packet: " +
+                        error.message
+                    );
+
+                    return;
+                }
+
+                packetCount++;
+
+                byteCount +=
+                    arrayBuffer.byteLength;
+
+                packetCountElement.textContent =
+                    packetCount.toLocaleString();
+
+                byteCountElement.textContent =
+                    byteCount.toLocaleString();
+
+                if (
+                    packetCount === 1 ||
+                    packetCount % 200 === 0
+                ) {
+                    log(
+                        `Audio packet received: ` +
+                        `${arrayBuffer.byteLength} bytes`
+                    );
+                }
+
+                packetProcessingChain =
+                    packetProcessingChain
+                        .then(() => handleAudioPacket(arrayBuffer))
+                        .catch((error) => {
+                            log(
+                                "Audio packet processing error: " +
+                                error.message
+                            );
+                        });
+
+                await packetProcessingChain;
+            };
+
+            socket.onerror = () => {
+                log(
+                    "WebSocket connection error."
+                );
+            };
+
+            socket.onclose = () => {
+                disconnectFromServer();
+            };
+        }
+
+        async function disconnectFromServer() {
+            const oldSocket = socket;
+
+            socket = null;
+
+            audioStarted = false;
+
+            resetPlaybackPipeline();
+
+            packetProcessingChain = Promise.resolve();
+            streamCodec = null;
+            streamCodecId = null;
+            streamFormatSequence = null;
+
+            await destroyDecoder();
+
+            if (oldSocket) {
+                try {
+                    oldSocket.close();
+                } catch (error) {}
+            }
+
+            setStatus(
+                serverStatus,
+                "Disconnected",
+                "offline"
+            );
+
+            setStatus(
+                audioStatus,
+                "Stopped",
+                "offline"
+            );
+
+            connectButton.disabled = false;
+            serverInput.disabled = false;
+
+            playButton.disabled = true;
+            pauseButton.disabled = true;
+            disconnectButton.disabled = true;
+
+            resetMeter();
+
+            log(
+                "Disconnected from server."
+            );
+        }
+
+        
+/* ============================================================
+   GMA RADIO APP UI
+   The receiver/codec/playback functions above are kept from the
+   original working AudioBridge receiver.
+   ============================================================ */
+
+const uiPlayButton = document.getElementById("uiPlayButton");
+const uiVolume = document.getElementById("uiVolume");
+const uiConnection = document.getElementById("uiConnection");
+const uiStationArt = document.getElementById("uiStationArt");
+const uiStationName = document.getElementById("uiStationName");
+const uiFrequency = document.getElementById("uiFrequency");
+const uiProgram = document.getElementById("uiProgram");
+const uiAmTab = document.getElementById("uiAmTab");
+const uiFmTab = document.getElementById("uiFmTab");
+const uiWave = document.getElementById("uiWave");
+
+for (let i = 0; i < 55; i++) {
+    const bar = document.createElement("span");
+    bar.className = "wave-bar";
+    bar.style.height = (Math.random() * 45 + 8) + "px";
+    bar.style.animationDelay = (Math.random() * 0.8) + "s";
+    uiWave.appendChild(bar);
+}
+
+function setUIConnection(text, type = "") {
+    uiConnection.textContent = text;
+    uiConnection.className = "connection " + type;
+}
+
+function updateUI() {
+    const station = stations[currentStation];
+    uiStationArt.src = station.artwork;
+    uiStationName.textContent = station.name;
+    uiFrequency.textContent = station.frequency;
+    uiProgram.textContent = station.program;
+
+    uiAmTab.classList.toggle("active", currentStation === "AM");
+    uiFmTab.classList.toggle("active", currentStation === "FM");
+}
+
+function updateMediaSession() {
+    if (!("mediaSession" in navigator)) return;
+
+    const station = stations[currentStation];
+
+    try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: station.name,
+            artist: station.program,
+            album: "GMA Radio Davao",
+            artwork: [{
+                src: new URL(station.artwork, window.location.href).href,
+                sizes: "512x512",
+                type: station.artwork.toLowerCase().endsWith(".webp")
+                    ? "image/webp"
+                    : "image/png"
+            }]
+        });
+
+        navigator.mediaSession.setActionHandler("play", () => startRadio());
+        navigator.mediaSession.setActionHandler("pause", () => pauseRadio());
+        navigator.mediaSession.setActionHandler("stop", () => pauseRadio());
+
+        try { navigator.mediaSession.setActionHandler("previoustrack", null); } catch (e) {}
+        try { navigator.mediaSession.setActionHandler("nexttrack", null); } catch (e) {}
+        try { navigator.mediaSession.setActionHandler("seekbackward", null); } catch (e) {}
+        try { navigator.mediaSession.setActionHandler("seekforward", null); } catch (e) {}
+    } catch (e) {}
+}
+
+function waitForSocket(timeout = 5000) {
+    return new Promise(resolve => {
+        const started = performance.now();
+
+        const timer = setInterval(() => {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                clearInterval(timer);
+                resolve(true);
+                return;
+            }
+
+            if (performance.now() - started >= timeout) {
+                clearInterval(timer);
+                resolve(false);
+            }
+        }, 50);
+    });
+}
+
+async function startRadio() {
+    try {
+        createAudioEngine();
+
+        if (audioContext.state !== "running") {
+            await audioContext.resume();
+        }
+
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+            serverInput.value = stations[currentStation].socket;
+            connectToServer();
+
+            const connected = await waitForSocket(5000);
+            if (!connected) {
+                audioStarted = false;
+                uiPlayButton.textContent = "▶";
+                setUIConnection("Unable to connect to stream", "err");
+                return;
+            }
+        }
+
+        await playAudio();
+
+        if (audioStarted) {
+            uiPlayButton.textContent = "❚❚";
+            setUIConnection("LIVE • " + currentStation, "ok");
+            updateMediaSession();
+        }
+    } catch (error) {
+        console.error("[GMA RADIO] Start error:", error);
+        audioStarted = false;
+        uiPlayButton.textContent = "▶";
+        setUIConnection("Audio could not start", "err");
+    }
+}
+
+async function pauseRadio() {
+    await pauseAudio();
+    uiPlayButton.textContent = "▶";
+    setUIConnection("Stream paused", "");
+    updateMediaSession();
+}
+
+async function switchStation(stationName) {
+    if (stationName === currentStation) return;
+
+    const wasPlaying = audioStarted;
+
+    await pauseAudio();
+
+    if (socket) {
+        const oldSocket = socket;
+        socket = null;
+        try { oldSocket.close(); } catch (e) {}
+    }
+
+    // AM and FM are independent receivers. Never carry the previous
+    // station's codec/decoder state into the new WebSocket.
+    streamCodec = null;
+    streamCodecId = null;
+    streamFormatSequence = null;
+    packetProcessingChain = Promise.resolve();
+
+    currentStation = stationName;
+    serverInput.value = stations[currentStation].socket;
+
+    updateUI();
+    updateMediaSession();
+    setUIConnection("Ready to stream", "");
+
+    if (wasPlaying) {
+        await startRadio();
+    }
+}
+
+uiPlayButton.addEventListener("click", () => {
+    if (audioStarted) pauseRadio();
+    else startRadio();
+});
+
+uiVolume.addEventListener("input", () => {
+    if (gainNode) {
+        gainNode.gain.value = Number(uiVolume.value);
+    }
+});
+
+uiAmTab.addEventListener("click", () => switchStation("AM"));
+uiFmTab.addEventListener("click", () => switchStation("FM"));
+
+/*
+ * Keep the original receiver initialization.
+ */
+createMeter();
+resetMeter();
+serverInput.value = stations[currentStation].socket;
+updateUI();
+updateMediaSession();
+setUIConnection("Ready to stream", "");
+log("GMA Radio UI ready.");
+
+</script>
+</body>
+</html>
