@@ -371,6 +371,55 @@ export class RadioReceiver {
 
         this.destroyed = false;
 
+        // Persistent WebSocket reconnect state.
+        this.shouldReconnect = false;
+        this.reconnectTimer = null;
+        this.reconnectAttempt = 0;
+        this.reconnectDelays = [1000, 2000, 4000, 8000, 15000];
+
+        // Wake/network recovery hooks for mobile browsers.
+        this.handleVisibilityChange = () => {
+            if (
+                document.visibilityState === "visible" &&
+                this.shouldReconnect &&
+                !this.destroyed
+            ) {
+                if (!this.connected) {
+                    this.reconnectAttempt = 0;
+                    this.scheduleReconnect();
+                }
+
+                if (this.audioContext) {
+                    this.audioContext.resume().catch(() => {});
+                }
+            }
+        };
+
+        this.handleOnline = () => {
+            if (
+                this.shouldReconnect &&
+                !this.destroyed &&
+                !this.connected
+            ) {
+                this.reconnectAttempt = 0;
+                this.scheduleReconnect();
+            }
+        };
+
+        if (typeof document !== "undefined") {
+            document.addEventListener(
+                "visibilitychange",
+                this.handleVisibilityChange
+            );
+        }
+
+        if (typeof window !== "undefined") {
+            window.addEventListener(
+                "online",
+                this.handleOnline
+            );
+        }
+
         this.currentCodec = null;
 
         this.codecId = null;
@@ -508,6 +557,14 @@ export class RadioReceiver {
 
     connect() {
 
+        if (this.destroyed) {
+            return;
+        }
+
+        // A call to connect() means the receiver should stay connected.
+        // Automatic reconnect remains enabled until disconnect() or destroy().
+        this.shouldReconnect = true;
+
         if (
             this.socket &&
             (
@@ -524,8 +581,15 @@ export class RadioReceiver {
             return;
         }
 
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+
         this.onStatus(
-            "connecting"
+            this.reconnectAttempt > 0
+                ? "reconnecting"
+                : "connecting"
         );
 
         let socket;
@@ -560,6 +624,12 @@ export class RadioReceiver {
             }
 
             this.connected = true;
+            this.reconnectAttempt = 0;
+
+            if (this.reconnectTimer) {
+                clearTimeout(this.reconnectTimer);
+                this.reconnectTimer = null;
+            }
 
             this.onStatus(
                 "connected"
@@ -614,14 +684,66 @@ export class RadioReceiver {
 
             this.socket = null;
 
-            this.onStatus(
-                "disconnected"
-            );
+            if (this.shouldReconnect && !this.destroyed) {
+                this.scheduleReconnect();
+            } else {
+                this.onStatus(
+                    "disconnected"
+                );
+            }
         };
     }
 
 
+    scheduleReconnect() {
+        if (
+            !this.shouldReconnect ||
+            this.destroyed ||
+            !this.url ||
+            this.reconnectTimer
+        ) {
+            return;
+        }
+
+        const index = Math.min(
+            this.reconnectAttempt,
+            this.reconnectDelays.length - 1
+        );
+        const delay =
+            this.reconnectDelays[index];
+
+        this.reconnectAttempt++;
+
+        this.onStatus(
+            "reconnecting"
+        );
+
+        this.reconnectTimer = setTimeout(() => {
+            this.reconnectTimer = null;
+
+            if (
+                !this.shouldReconnect ||
+                this.destroyed
+            ) {
+                return;
+            }
+
+            this.connect();
+        }, delay);
+    }
+
+
     disconnect() {
+
+        // Explicit disconnect means: do NOT reconnect.
+        this.shouldReconnect = false;
+
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+
+        this.reconnectAttempt = 0;
 
         const socket =
             this.socket;
@@ -1926,6 +2048,26 @@ export class RadioReceiver {
     async destroy() {
 
         this.destroyed = true;
+        this.shouldReconnect = false;
+
+        if (this.reconnectTimer) {
+            clearTimeout(this.reconnectTimer);
+            this.reconnectTimer = null;
+        }
+
+        if (typeof document !== "undefined") {
+            document.removeEventListener(
+                "visibilitychange",
+                this.handleVisibilityChange
+            );
+        }
+
+        if (typeof window !== "undefined") {
+            window.removeEventListener(
+                "online",
+                this.handleOnline
+            );
+        }
 
         this.pipelineStarted = false;
         this.prepared = false;
