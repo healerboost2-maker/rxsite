@@ -91,7 +91,8 @@ export default {
 
             "/assets/gma_logo.webp",
             "/assets/notif_am.png",
-            "/assets/notif_fm.png"
+            "/assets/notif_fm.png",
+            "/assets/broadcast_signal.svg"
         ]);
 
         if (allowedFiles.has(path)) {
