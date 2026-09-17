@@ -135,6 +135,36 @@
         }
       }
 
+
+.station-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    display: block;
+    transform-origin: center center;
+}
+
+.station-logo.playing {
+    animation: spinDisc 6s linear infinite;
+}
+
+@keyframes spinDisc {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+
+
+
+
       .tabs {
         display: flex;
         margin: 18px 20px 16px;
