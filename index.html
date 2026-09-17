@@ -1,856 +1,914 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <meta name="theme-color" content="#061a3a">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <meta name="theme-color" content="#061a3a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>GMA Radio Davao</title>
-    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
 
     <style>
-        * {
-            box-sizing: border-box
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #020817;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        background:
+          radial-gradient(
+            circle at 50% 8%,
+            rgba(0, 116, 255, 0.3),
+            transparent 34%
+          ),
+          radial-gradient(
+            circle at 90% 70%,
+            rgba(0, 210, 255, 0.1),
+            transparent 30%
+          ),
+          linear-gradient(180deg, #031127 0%, #061d42 55%, #020817 100%);
+      }
+
+      .app {
+        width: 100%;
+        max-width: 520px;
+        min-height: 100vh;
+        margin: auto;
+        position: relative;
+        padding-bottom: 34px;
+      }
+
+      .bg-wave {
+        position: fixed;
+        left: -10%;
+        right: -10%;
+        bottom: -90px;
+        height: 230px;
+        border-radius: 50%;
+        border-top: 2px solid rgba(0, 174, 255, 0.45);
+        box-shadow: 0 -25px 90px rgba(0, 115, 255, 0.18);
+        transform: rotate(-4deg);
+        pointer-events: none;
+      }
+
+      .header {
+        padding: 24px 20px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+
+      .brand img {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #fff;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+        margin: 0 0 4px;
+      }
+
+      .brand p {
+        font-size: 11px;
+        color: #9fb9d9;
+        margin: 0;
+      }
+
+      .live {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #ff3148;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ff2340;
+        box-shadow: 0 0 12px #ff2340;
+        animation: pulse 1.3s infinite;
+      }
+
+      .station-toast-card .broadcast-icon {
+        width: 24px !important;
+        height: 18px !important;
+        min-width: 24px !important;
+        min-height: 18px !important;
+        max-width: 24px !important;
+        max-height: 18px !important;
+        object-fit: contain;
+        display: block;
+        flex: 0 0 24px;
+      }
+
+      @keyframes pulse {
+        50% {
+          opacity: 0.35;
+          transform: scale(0.7);
+        }
+      }
+
+      .tabs {
+        display: flex;
+        margin: 18px 20px 16px;
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 15px;
+      }
+
+      .tab {
+        flex: 1;
+        border: 0;
+        background: transparent;
+        color: #8da9ce;
+        padding: 12px;
+        border-radius: 11px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .tab.active {
+        color: #fff;
+        background: linear-gradient(135deg, #0787ff, #0054ca);
+        box-shadow: 0 7px 25px rgba(0, 91, 255, 0.28);
+      }
+
+      .card {
+        margin: 0 20px;
+        padding: 24px;
+        border-radius: 28px;
+        background: linear-gradient(
+          145deg,
+          rgba(15, 50, 92, 0.96),
+          rgba(2, 17, 38, 0.98)
+        );
+        border: 1px solid rgba(105, 181, 255, 0.2);
+        box-shadow:
+          0 25px 70px rgba(0, 0, 0, 0.42),
+          inset 0 1px rgba(255, 255, 255, 0.08);
+      }
+
+      .art-wrap {
+        display: flex;
+        justify-content: center;
+        margin: 2px 0 20px;
+      }
+
+      .art {
+        width: 190px;
+        height: 190px;
+        border-radius: 25px;
+        object-fit: cover;
+        background: #071b36;
+        box-shadow:
+          0 15px 50px rgba(0, 0, 0, 0.52),
+          0 0 35px rgba(0, 115, 255, 0.16);
+      }
+
+      .info {
+        text-align: center;
+      }
+
+      .info .state {
+        font-size: 11px;
+        color: #ff3048;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        margin-bottom: 8px;
+      }
+
+      .info h2 {
+        font-size: 21px;
+        margin: 0 0 7px;
+      }
+
+      .freq {
+        font-size: 14px;
+        color: #78b9ff;
+        font-weight: 700;
+      }
+
+      .program {
+        margin-top: 9px;
+        color: #c9d9ed;
+        font-size: 13px;
+      }
+
+      .wave {
+        height: 62px;
+        margin: 21px 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        overflow: hidden;
+      }
+
+      .wave-bar {
+        width: 3px;
+        height: 10px;
+        border-radius: 5px;
+        background: linear-gradient(180deg, #49b8ff, #0071ff);
+        animation: wave 0.85s ease-in-out infinite alternate;
+      }
+
+      @keyframes wave {
+        from {
+          transform: scaleY(0.25);
         }
 
-        html,
-        body {
-            margin: 0;
-            min-height: 100%;
-            background: #020817;
-            color: #fff;
-            font-family: Arial, Helvetica, sans-serif
+        to {
+          transform: scaleY(1);
         }
+      }
 
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
-            background:
-                radial-gradient(circle at 50% 8%, rgba(0, 116, 255, .30), transparent 34%),
-                radial-gradient(circle at 90% 70%, rgba(0, 210, 255, .10), transparent 30%),
-                linear-gradient(180deg, #031127 0%, #061d42 55%, #020817 100%);
-        }
+      .controls {
+        display: flex;
+        justify-content: center;
+      }
 
+      .play {
+        width: 76px;
+        height: 76px;
+        border: 0;
+        border-radius: 50%;
+        background: #fff;
+        color: #061a3a;
+        font-size: 25px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+      }
+
+      .play:active {
+        transform: scale(0.93);
+      }
+
+      .volume {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-top: 20px;
+      }
+
+      .volume input {
+        width: 100%;
+        accent-color: #1185ff;
+      }
+
+      .connection {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 11px;
+        color: #7897bc;
+      }
+
+      .connection.ok {
+        color: #43df9d;
+      }
+
+      .connection.err {
+        color: #ff6070;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 24px;
+        color: #5d7da5;
+        font-size: 10px;
+        letter-spacing: 0.6px;
+      }
+
+      .hidden-engine {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      @media (min-width: 700px) {
         .app {
-            width: 100%;
-            max-width: 520px;
-            min-height: 100vh;
-            margin: auto;
-            position: relative;
-            padding-bottom: 34px
+          padding-top: 18px;
+        }
+      }
+
+      .audio-permission {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(1, 8, 20, 0.82);
+        backdrop-filter: blur(10px);
+      }
+
+      .audio-permission.hidden {
+        display: none;
+      }
+
+      .audio-permission-card {
+        width: 100%;
+        max-width: 390px;
+        padding: 28px 24px;
+        border-radius: 24px;
+        text-align: center;
+        background: linear-gradient(
+          145deg,
+          rgba(15, 50, 92, 0.98),
+          rgba(2, 17, 38, 0.99)
+        );
+        border: 1px solid rgba(105, 181, 255, 0.22);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+        animation: permissionIn 0.28s ease-out;
+      }
+
+      .audio-permission-icon {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 14px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 126, 255, 0.18);
+        font-size: 25px;
+      }
+
+      .audio-permission-card h2 {
+        margin: 0 0 10px;
+        font-size: 22px;
+      }
+
+      .audio-permission-card p {
+        margin: 0 0 22px;
+        color: #b8cce4;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .audio-permission-button {
+        width: 100%;
+        border: 0;
+        border-radius: 14px;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #0787ff, #0054ca);
+        color: #fff;
+        font-weight: 800;
+        font-size: 15px;
+        cursor: pointer;
+        box-shadow: 0 8px 28px rgba(0, 91, 255, 0.28);
+      }
+
+      .station-toast-container {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        z-index: 999;
+        width: min(92vw, 420px);
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .station-toast {
+        width: 100%;
+        opacity: 0;
+        transform: translateY(-24px) scale(0.96);
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          opacity 0.28s ease,
+          transform 0.28s ease,
+          max-height 0.28s ease;
+      }
+
+      .station-toast.show {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        max-height: 90px;
+      }
+
+      .station-toast-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 13px 17px;
+        border-radius: 16px;
+        background: rgba(3, 20, 43, 0.96);
+        border: 1px solid rgba(105, 181, 255, 0.24);
+        box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(12px);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .station-toast-card strong {
+        color: #78b9ff;
+      }
+
+      @keyframes permissionIn {
+        from {
+          opacity: 0;
+          transform: scale(0.96) translateY(8px);
         }
 
-        .bg-wave {
-            position: fixed;
-            left: -10%;
-            right: -10%;
-            bottom: -90px;
-            height: 230px;
-            border-radius: 50%;
-            border-top: 2px solid rgba(0, 174, 255, .45);
-            box-shadow: 0 -25px 90px rgba(0, 115, 255, .18);
-            transform: rotate(-4deg);
-            pointer-events: none
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
         }
+      }
 
-        .header {
-            padding: 24px 20px 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 11px
-        }
-
-        .brand img {
-            width: 54px;
-            height: 54px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #fff
-        }
-
-        .brand h1 {
-            font-size: 18px;
-            margin: 0 0 4px
-        }
-
-        .brand p {
-            font-size: 11px;
-            color: #9fb9d9;
-            margin: 0
-        }
-
-        .live {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #ff3148;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ff2340;
-            box-shadow: 0 0 12px #ff2340;
-            animation: pulse 1.3s infinite
-        }
-        
-        @keyframes pulse {
-            50% {
-                opacity: .35;
-                transform: scale(.7)
-            }
-        }
-
-        .tabs {
-            display: flex;
-            margin: 18px 20px 16px;
-            padding: 5px;
-            background: rgba(255, 255, 255, .07);
-            border: 1px solid rgba(255, 255, 255, .08);
-            border-radius: 15px
-        }
-
-        .tab {
-            flex: 1;
-            border: 0;
-            background: transparent;
-            color: #8da9ce;
-            padding: 12px;
-            border-radius: 11px;
-            font-weight: 800;
-            cursor: pointer
-        }
-
-        .tab.active {
-            color: #fff;
-            background: linear-gradient(135deg, #0787ff, #0054ca);
-            box-shadow: 0 7px 25px rgba(0, 91, 255, .28)
-        }
-
-        .card {
-            margin: 0 20px;
-            padding: 24px;
-            border-radius: 28px;
-            background: linear-gradient(145deg, rgba(15, 50, 92, .96), rgba(2, 17, 38, .98));
-            border: 1px solid rgba(105, 181, 255, .20);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .42), inset 0 1px rgba(255, 255, 255, .08)
-        }
-
-        .art-wrap {
-            display: flex;
-            justify-content: center;
-            margin: 2px 0 20px
-        }
-
-        .art {
-            width: 190px;
-            height: 190px;
-            border-radius: 25px;
-            object-fit: cover;
-            background: #071b36;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, .52), 0 0 35px rgba(0, 115, 255, .16)
-        }
-
-        .info {
-            text-align: center
-        }
-
-        .info .state {
-            font-size: 11px;
-            color: #ff3048;
-            font-weight: 800;
-            letter-spacing: 1.8px;
-            margin-bottom: 8px
-        }
-
-        .info h2 {
-            font-size: 21px;
-            margin: 0 0 7px
-        }
-
-        .freq {
-            font-size: 14px;
-            color: #78b9ff;
-            font-weight: 700
-        }
-
-        .program {
-            margin-top: 9px;
-            color: #c9d9ed;
-            font-size: 13px
-        }
-
-        .wave {
-            height: 62px;
-            margin: 21px 0 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            overflow: hidden
-        }
-
-        .wave-bar {
-            width: 3px;
-            height: 10px;
-            border-radius: 5px;
-            background: linear-gradient(180deg, #49b8ff, #0071ff);
-            animation: wave .85s ease-in-out infinite alternate
-        }
-
-        @keyframes wave {
-            from {
-                transform: scaleY(.25)
-            }
-
-            to {
-                transform: scaleY(1)
-            }
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center
-        }
-
-        .play {
-            width: 76px;
-            height: 76px;
-            border: 0;
-            border-radius: 50%;
-            background: #fff;
-            color: #061a3a;
-            font-size: 25px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, .45)
-        }
-
-        .play:active {
-            transform: scale(.93)
-        }
-
-        .volume {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            margin-top: 20px
-        }
-
-        .volume input {
-            width: 100%;
-            accent-color: #1185ff
-        }
-
-        .connection {
-            text-align: center;
-            margin-top: 14px;
-            font-size: 11px;
-            color: #7897bc
-        }
-
-        .connection.ok {
-            color: #43df9d
-        }
-
-        .connection.err {
-            color: #ff6070
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 24px;
-            color: #5d7da5;
-            font-size: 10px;
-            letter-spacing: .6px
-        }
-
-        .hidden-engine {
-            position: absolute;
-            left: -10000px;
-            top: auto;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none
-        }
-
-        @media(min-width:700px) {
-            .app {
-                padding-top: 18px
-            }
-        }
-
+      @media (max-width: 430px) {
         .audio-permission {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: rgba(1, 8, 20, .82);
-            backdrop-filter: blur(10px)
-        }
-
-        .audio-permission.hidden {
-            display: none
-        }
-
-        .audio-permission-card {
-            width: 100%;
-            max-width: 390px;
-            padding: 28px 24px;
-            border-radius: 24px;
-            text-align: center;
-            background: linear-gradient(145deg, rgba(15, 50, 92, .98), rgba(2, 17, 38, .99));
-            border: 1px solid rgba(105, 181, 255, .22);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .55);
-            animation: permissionIn .28s ease-out
-        }
-
-        .audio-permission-icon {
-            width: 52px;
-            height: 52px;
-            margin: 0 auto 14px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            background: rgba(0, 126, 255, .18);
-            font-size: 25px
-        }
-
-        .audio-permission-card h2 {
-            margin: 0 0 10px;
-            font-size: 22px
-        }
-
-        .audio-permission-card p {
-            margin: 0 0 22px;
-            color: #b8cce4;
-            font-size: 13px;
-            line-height: 1.55
-        }
-
-        .audio-permission-button {
-            width: 100%;
-            border: 0;
-            border-radius: 14px;
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #0787ff, #0054ca);
-            color: #fff;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 8px 28px rgba(0, 91, 255, .28)
+          padding: 18px;
         }
 
         .station-toast-container {
-            position: fixed;
-            top: 18px;
-            left: 50%;
-            z-index: 999;
-            width: min(92vw, 420px);
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            pointer-events: none
-        }
-
-        .station-toast {
-            width: 100%;
-            opacity: 0;
-            transform: translateY(-24px) scale(.96);
-            max-height: 0;
-            overflow: hidden;
-            transition: opacity .28s ease, transform .28s ease, max-height .28s ease
-        }
-
-        .station-toast.show {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            max-height: 90px
+          top: 12px;
         }
 
         .station-toast-card {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 13px 17px;
-            border-radius: 16px;
-            background: rgba(3, 20, 43, .96);
-            border: 1px solid rgba(105, 181, 255, .24);
-            box-shadow: 0 14px 38px rgba(0, 0, 0, .45);
-            backdrop-filter: blur(12px);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 700;
-            text-align: center
+          padding: 12px 14px;
         }
-
-        .station-toast-card strong {
-            color: #78b9ff
-        }
-
-        @keyframes permissionIn {
-            from {
-                opacity: 0;
-                transform: scale(.96) translateY(8px)
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0)
-            }
-        }
-
-        @media(max-width:430px) {
-            .audio-permission {
-                padding: 18px
-            }
-
-            .station-toast-container {
-                top: 12px
-            }
-
-            .station-toast-card {
-                padding: 12px 14px
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
-    <div class="station-toast-container" id="stationToastContainer" aria-live="polite"></div>
+  <body>
+    <div
+      class="station-toast-container"
+      id="stationToastContainer"
+      aria-live="polite"
+    ></div>
 
     <div class="audio-permission" id="audioPermission" aria-live="polite">
-        <div class="audio-permission-card">
-            <div class="audio-permission-icon" aria-hidden="true">🔊</div>
-            <div class="audio-permission-copy">
-                <h2>Enable Live Audio</h2>
-                <p>Tap below to allow GMA Radio Davao to start live audio playback. AM and FM will prepare in the
-                    background for smooth switching.</p>
-            </div>
-            <button class="audio-permission-button" id="audioPermissionButton">ENABLE LIVE AUDIO</button>
+      <div class="audio-permission-card">
+        <div class="audio-permission-icon" aria-hidden="true">🔊</div>
+        <div class="audio-permission-copy">
+          <h2>Enable Live Audio</h2>
+          <p>
+            Tap below to allow GMA Radio Davao to start live audio playback. AM
+            and FM will prepare in the background for smooth switching.
+          </p>
         </div>
+        <button class="audio-permission-button" id="audioPermissionButton">
+          ENABLE LIVE AUDIO
+        </button>
+      </div>
     </div>
     <div class="bg-wave"></div>
 
     <div class="app">
-        <header class="header">
-            <div class="brand">
-                <img src="assets/gma_logo.webp" alt="GMA Radio">
-                <div>
-                    <h1>GMA Radio Davao</h1>
-                    <p>Live Audio Streaming</p>
-                </div>
-            </div>
-            <div class="live"><span class="live-dot"></span>LIVE</div>
-        </header>
+      <header class="header">
+        <div class="brand">
+          <img src="assets/gma_logo.webp" alt="GMA Radio" />
+          <div>
+            <h1>GMA Radio Davao</h1>
+            <p>Live Audio Streaming</p>
+          </div>
+        </div>
+        <div class="live"><span class="live-dot"></span>LIVE</div>
+      </header>
 
-        <div class="tabs">
-            <button class="tab active" id="uiAmTab">AM</button>
-            <button class="tab" id="uiFmTab">FM</button>
+      <div class="tabs">
+        <button class="tab active" id="uiAmTab">AM</button>
+        <button class="tab" id="uiFmTab">FM</button>
+      </div>
+
+      <section class="card">
+        <div class="art-wrap">
+          <img
+            class="art"
+            id="uiStationArt"
+            src="assets/notif_am.png"
+            alt="Station"
+          />
         </div>
 
-        <section class="card">
-            <div class="art-wrap">
-                <img class="art" id="uiStationArt" src="assets/notif_am.png" alt="Station">
-            </div>
+        <div class="info">
+          <div class="state">🔴 LIVE</div>
+          <h2 id="uiStationName">GMA Super Radyo Davao</h2>
+          <div class="freq" id="uiFrequency">DXGM 1125 kHz</div>
+          <div class="program" id="uiProgram">Dapat Totoo</div>
+        </div>
 
-            <div class="info">
-                <div class="state">🔴 LIVE</div>
-                <h2 id="uiStationName">GMA Super Radyo Davao</h2>
-                <div class="freq" id="uiFrequency">DXGM 1125 kHz</div>
-                <div class="program" id="uiProgram">Dapat Totoo</div>
-            </div>
+        <div class="wave" id="uiWave"></div>
 
-            <div class="wave" id="uiWave"></div>
+        <div class="controls">
+          <button class="play" id="uiPlayButton" aria-label="Play or pause">
+            ▶
+          </button>
+        </div>
 
-            <div class="controls">
-                <button class="play" id="uiPlayButton" aria-label="Play or pause">▶</button>
-            </div>
+        <div class="volume">
+          <span>🔊</span>
+          <input
+            id="uiVolume"
+            type="range"
+            min="0"
+            max="1"
+            step=".01"
+            value="1"
+            aria-label="Volume"
+          />
+        </div>
 
-            <div class="volume">
-                <span>🔊</span>
-                <input id="uiVolume" type="range" min="0" max="1" step=".01" value="1" aria-label="Volume">
-            </div>
+        <div id="uiConnection" class="connection">Ready to stream</div>
+      </section>
 
-            <div id="uiConnection" class="connection">Ready to stream</div>
-        </section>
-
-        <footer class="footer">GMA NETWORK INC. • Dapat Totoo</footer>
+      <footer class="footer">GMA NETWORK INC. • Dapat Totoo</footer>
     </div>
 
     <script type="module">
-        import {
-            createAudioEngine,
-            resumeAudioEngine,
-            startMeter
-        } from "./modules/radio-core.js";
+      import {
+        createAudioEngine,
+        resumeAudioEngine,
+        startMeter,
+      } from "./modules/radio-core.js";
 
-        import {
-            AM_STATION,
-            createAMReceiver
-        } from "./modules/am.js";
+      import { AM_STATION, createAMReceiver } from "./modules/am.js";
 
-        import {
-            FM_STATION,
-            createFMReceiver
-        } from "./modules/fm.js";
+      import { FM_STATION, createFMReceiver } from "./modules/fm.js";
 
-        "use strict";
+      ("use strict");
 
-        const CROSSFADE_SEC = 0.18;
+      const CROSSFADE_SEC = 0.18;
 
-        let currentStation = "AM";
-        let audioReady = false;
-        let audioUnlocked = false;
-        let receiversReady = false;
-        let amReceiver = null;
-        let fmReceiver = null;
+      let currentStation = "AM";
+      let audioReady = false;
+      let audioUnlocked = false;
+      let receiversReady = false;
+      let amReceiver = null;
+      let fmReceiver = null;
 
-        const stations = {
-            AM: AM_STATION,
-            FM: FM_STATION
-        };
+      const stations = {
+        AM: AM_STATION,
+        FM: FM_STATION,
+      };
 
-        const uiPlayButton = document.getElementById("uiPlayButton");
-        const uiVolume = document.getElementById("uiVolume");
-        const uiConnection = document.getElementById("uiConnection");
-        const uiStationArt = document.getElementById("uiStationArt");
-        const uiStationName = document.getElementById("uiStationName");
-        const uiFrequency = document.getElementById("uiFrequency");
-        const uiProgram = document.getElementById("uiProgram");
-        const uiAmTab = document.getElementById("uiAmTab");
-        const uiFmTab = document.getElementById("uiFmTab");
-        const uiWave = document.getElementById("uiWave");
-        const audioPermission = document.getElementById("audioPermission");
-        const audioPermissionButton = document.getElementById("audioPermissionButton");
-        const stationToastContainer = document.getElementById("stationToastContainer");
+      const uiPlayButton = document.getElementById("uiPlayButton");
+      const uiVolume = document.getElementById("uiVolume");
+      const uiConnection = document.getElementById("uiConnection");
+      const uiStationArt = document.getElementById("uiStationArt");
+      const uiStationName = document.getElementById("uiStationName");
+      const uiFrequency = document.getElementById("uiFrequency");
+      const uiProgram = document.getElementById("uiProgram");
+      const uiAmTab = document.getElementById("uiAmTab");
+      const uiFmTab = document.getElementById("uiFmTab");
+      const uiWave = document.getElementById("uiWave");
+      const audioPermission = document.getElementById("audioPermission");
+      const audioPermissionButton = document.getElementById(
+        "audioPermissionButton",
+      );
+      const stationToastContainer = document.getElementById(
+        "stationToastContainer",
+      );
 
-        function setUIConnection(text, type = "") {
-            uiConnection.textContent = text;
-            uiConnection.className = "connection " + type;
-        }
+      function setUIConnection(text, type = "") {
+        uiConnection.textContent = text;
+        uiConnection.className = "connection " + type;
+      }
 
-        function showAudioPermission() {
-            audioPermission.classList.remove("hidden");
-        }
+      function showAudioPermission() {
+        audioPermission.classList.remove("hidden");
+      }
 
-        function hideAudioPermission() {
-            audioPermission.classList.add("hidden");
-        }
+      function hideAudioPermission() {
+        audioPermission.classList.add("hidden");
+      }
 
-        function showStationToast(stationName) {
-            const station = stations[stationName];
-            if (!station) return;
+      function showStationToast(stationName) {
+        const station = stations[stationName];
+        if (!station) return;
 
-            const toast = document.createElement("div");
-            toast.className = "station-toast";
-            toast.innerHTML = `
+        const toast = document.createElement("div");
+        toast.className = "station-toast";
+        toast.innerHTML = `
     <div class="station-toast-card">
         <img src="/assets/broadcast_signal.svg" class="broadcast-icon" alt="">
         <span> You are listening to <strong>${station.name}</strong></span>
     </div>
 `;
 
-            stationToastContainer.prepend(toast);
+        stationToastContainer.prepend(toast);
 
-            requestAnimationFrame(() => {
-                toast.classList.add("show");
-            });
-
-            while (stationToastContainer.children.length > 2) {
-                stationToastContainer.lastElementChild.remove();
-            }
-
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 320);
-            }, 2200);
-        }
-
-        function updateUI() {
-            const station = stations[currentStation];
-
-            uiStationArt.src = station.artwork;
-            uiStationName.textContent = station.name;
-            uiFrequency.textContent = station.frequency;
-            uiProgram.textContent = station.program;
-
-            uiAmTab.classList.toggle("active", currentStation === "AM");
-            uiFmTab.classList.toggle("active", currentStation === "FM");
-        }
-
-        function updateMediaSession() {
-            if (!("mediaSession" in navigator)) return;
-
-            const station = stations[currentStation];
-
-            try {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: station.name,
-                    artist: station.program,
-                    album: "GMA Radio Davao",
-                    artwork: [{
-                        src: new URL(station.artwork, window.location.href).href,
-                        sizes: "512x512",
-                        type: station.artwork.toLowerCase().endsWith(".webp")
-                            ? "image/webp"
-                            : "image/png"
-                    }]
-                });
-
-                navigator.mediaSession.setActionHandler("play", () => startRadio());
-                navigator.mediaSession.setActionHandler("pause", () => pauseRadio());
-                navigator.mediaSession.setActionHandler("stop", () => pauseRadio());
-            } catch (_) { }
-        }
-
-        function receiverStatus(station, status) {
-            if (station !== currentStation) return;
-
-            if (status === "connecting") {
-                setUIConnection("Connecting...", "");
-                return;
-            }
-
-            if (status === "connected") {
-                setUIConnection(
-                    audioReady ? "LIVE • " + currentStation : "Connected",
-                    "ok"
-                );
-                return;
-            }
-
-            if (status === "disconnected") {
-                setUIConnection(
-                    audioReady ? "Stream disconnected" : "Ready to stream",
-                    audioReady ? "err" : ""
-                );
-                return;
-            }
-
-            if (status === "error") {
-                setUIConnection("Stream connection error", "err");
-            }
-        }
-
-        function receiverFormat() {
-            // Codec/format is learned by radio-core from the GMA1 stream.
-        }
-
-        function receiverError(station) {
-            if (station !== currentStation || !audioReady) return;
-            setUIConnection("Audio stream error", "err");
-        }
-
-        function createReceivers() {
-            if (receiversReady) return;
-
-            amReceiver = createAMReceiver({
-                onStatus: status => receiverStatus("AM", status),
-                onFormat: format => receiverFormat("AM", format),
-                onError: error => receiverError("AM", error)
-            });
-
-            fmReceiver = createFMReceiver({
-                onStatus: status => receiverStatus("FM", status),
-                onFormat: format => receiverFormat("FM", format),
-                onError: error => receiverError("FM", error)
-            });
-
-            receiversReady = true;
-        }
-
-        function getReceiver(station = currentStation) {
-            return station === "AM" ? amReceiver : fmReceiver;
-        }
-
-        function connectReceivers() {
-            createReceivers();
-            amReceiver.connect();
-            fmReceiver.connect();
-        }
-
-        async function prepareBothReceivers() {
-            createReceivers();
-            await Promise.all([
-                amReceiver.prepareAudio(),
-                fmReceiver.prepareAudio()
-            ]);
-        }
-
-        async function startRadio() {
-            createReceivers();
-
-            try {
-                await resumeAudioEngine();
-                const engine = createAudioEngine();
-
-                if (!engine || engine.context.state !== "running") {
-                    showAudioPermission();
-                    setUIConnection("Tap ENABLE LIVE AUDIO to start", "err");
-                    return false;
-                }
-
-                await prepareBothReceivers();
-                audioUnlocked = true;
-                audioReady = true;
-                hideAudioPermission();
-
-                const volume = Number(uiVolume.value);
-                const active = getReceiver(currentStation);
-                const inactive = getReceiver(currentStation === "AM" ? "FM" : "AM");
-
-                active.setVolume(volume, true);
-                inactive.setVolume(0, true);
-
-                uiPlayButton.textContent = "❚❚";
-                setUIConnection("LIVE • " + currentStation, "ok");
-                updateMediaSession();
-                return true;
-            } catch (_) {
-                audioReady = false;
-                audioUnlocked = false;
-                uiPlayButton.textContent = "▶";
-                showAudioPermission();
-                setUIConnection("Audio could not start", "err");
-                return false;
-            }
-        }
-
-        async function pauseRadio() {
-            audioReady = false;
-
-            const am = getReceiver("AM");
-            const fm = getReceiver("FM");
-
-            if (am) am.setVolume(0, true);
-            if (fm) fm.setVolume(0, true);
-
-            const engine = createAudioEngine();
-            if (engine && engine.context.state === "running") {
-                try {
-                    await engine.context.suspend();
-                } catch (_) { }
-            }
-
-            // Receivers, WebSockets, decoders and their jitter buffers are retained.
-            uiPlayButton.textContent = "▶";
-            setUIConnection("Stream paused", "");
-            updateMediaSession();
-        }
-
-        async function switchStation(stationName) {
-            if (stationName === currentStation) return;
-
-            const previousStation = currentStation;
-            currentStation = stationName;
-            updateUI();
-            updateMediaSession();
-            showStationToast(stationName);
-
-            const previous = getReceiver(previousStation);
-            const next = getReceiver(currentStation);
-
-            if (!audioReady) {
-                setUIConnection(
-                    next && next.connected
-                        ? "Ready • " + currentStation
-                        : "Connecting • " + currentStation,
-                    ""
-                );
-                return;
-            }
-
-            try {
-                if (!next.prepared) {
-                    await next.prepareAudio();
-                }
-
-                if (!next.connected) next.connect();
-
-                const volume = Number(uiVolume.value);
-                previous.setVolume(0, true);
-                next.setVolume(volume, true);
-
-                setUIConnection("LIVE • " + currentStation, "ok");
-                uiPlayButton.textContent = "❚❚";
-            } catch (_) {
-                setUIConnection("Unable to switch station", "err");
-            }
-        }
-
-        uiVolume.addEventListener("input", () => {
-            const receiver = getReceiver();
-            if (audioReady && receiver) {
-                receiver.setVolume(Number(uiVolume.value), false);
-            }
+        requestAnimationFrame(() => {
+          toast.classList.add("show");
         });
 
-        uiPlayButton.addEventListener("click", async () => {
-            if (audioReady) {
-                await pauseRadio();
-            } else {
-                await startRadio();
-            }
-        });
-
-        audioPermissionButton.addEventListener("click", async () => {
-            await startRadio();
-        });
-
-        uiAmTab.addEventListener("click", () => switchStation("AM"));
-        uiFmTab.addEventListener("click", () => switchStation("FM"));
-
-        for (let i = 0; i < 55; i++) {
-            const bar = document.createElement("span");
-            bar.className = "wave-bar";
-            bar.style.height = (Math.random() * 45 + 8) + "px";
-            bar.style.animationDelay = (Math.random() * 0.8) + "s";
-            uiWave.appendChild(bar);
+        while (stationToastContainer.children.length > 2) {
+          stationToastContainer.lastElementChild.remove();
         }
 
-        createAudioEngine();
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 320);
+        }, 2200);
+      }
+
+      function updateUI() {
+        const station = stations[currentStation];
+
+        uiStationArt.src = station.artwork;
+        uiStationName.textContent = station.name;
+        uiFrequency.textContent = station.frequency;
+        uiProgram.textContent = station.program;
+
+        uiAmTab.classList.toggle("active", currentStation === "AM");
+        uiFmTab.classList.toggle("active", currentStation === "FM");
+      }
+
+      function updateMediaSession() {
+        if (!("mediaSession" in navigator)) return;
+
+        const station = stations[currentStation];
+
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: station.name,
+            artist: station.program,
+            album: "GMA Radio Davao",
+            artwork: [
+              {
+                src: new URL(station.artwork, window.location.href).href,
+                sizes: "512x512",
+                type: station.artwork.toLowerCase().endsWith(".webp")
+                  ? "image/webp"
+                  : "image/png",
+              },
+            ],
+          });
+
+          navigator.mediaSession.setActionHandler("play", () => startRadio());
+          navigator.mediaSession.setActionHandler("pause", () => pauseRadio());
+          navigator.mediaSession.setActionHandler("stop", () => pauseRadio());
+        } catch (_) {}
+      }
+
+      function receiverStatus(station, status) {
+        if (station !== currentStation) return;
+
+        if (status === "connecting") {
+          setUIConnection("Connecting...", "");
+          return;
+        }
+
+        if (status === "connected") {
+          setUIConnection(
+            audioReady ? "LIVE • " + currentStation : "Connected",
+            "ok",
+          );
+          return;
+        }
+
+        if (status === "disconnected") {
+          setUIConnection(
+            audioReady ? "Stream disconnected" : "Ready to stream",
+            audioReady ? "err" : "",
+          );
+          return;
+        }
+
+        if (status === "error") {
+          setUIConnection("Stream connection error", "err");
+        }
+      }
+
+      function receiverFormat() {
+        // Codec/format is learned by radio-core from the GMA1 stream.
+      }
+
+      function receiverError(station) {
+        if (station !== currentStation || !audioReady) return;
+        setUIConnection("Audio stream error", "err");
+      }
+
+      function createReceivers() {
+        if (receiversReady) return;
+
+        amReceiver = createAMReceiver({
+          onStatus: (status) => receiverStatus("AM", status),
+          onFormat: (format) => receiverFormat("AM", format),
+          onError: (error) => receiverError("AM", error),
+        });
+
+        fmReceiver = createFMReceiver({
+          onStatus: (status) => receiverStatus("FM", status),
+          onFormat: (format) => receiverFormat("FM", format),
+          onError: (error) => receiverError("FM", error),
+        });
+
+        receiversReady = true;
+      }
+
+      function getReceiver(station = currentStation) {
+        return station === "AM" ? amReceiver : fmReceiver;
+      }
+
+      function connectReceivers() {
         createReceivers();
+        amReceiver.connect();
+        fmReceiver.connect();
+      }
+
+      async function prepareBothReceivers() {
+        createReceivers();
+        await Promise.all([
+          amReceiver.prepareAudio(),
+          fmReceiver.prepareAudio(),
+        ]);
+      }
+
+      async function startRadio() {
+        createReceivers();
+
+        try {
+          await resumeAudioEngine();
+          const engine = createAudioEngine();
+
+          if (!engine || engine.context.state !== "running") {
+            showAudioPermission();
+            setUIConnection("Tap ENABLE LIVE AUDIO to start", "err");
+            return false;
+          }
+
+          await prepareBothReceivers();
+          audioUnlocked = true;
+          audioReady = true;
+          hideAudioPermission();
+
+          const volume = Number(uiVolume.value);
+          const active = getReceiver(currentStation);
+          const inactive = getReceiver(currentStation === "AM" ? "FM" : "AM");
+
+          active.setVolume(volume, true);
+          inactive.setVolume(0, true);
+
+          uiPlayButton.textContent = "❚❚";
+          setUIConnection("LIVE • " + currentStation, "ok");
+          updateMediaSession();
+          return true;
+        } catch (_) {
+          audioReady = false;
+          audioUnlocked = false;
+          uiPlayButton.textContent = "▶";
+          showAudioPermission();
+          setUIConnection("Audio could not start", "err");
+          return false;
+        }
+      }
+
+      async function pauseRadio() {
+        audioReady = false;
+
+        const am = getReceiver("AM");
+        const fm = getReceiver("FM");
+
+        if (am) am.setVolume(0, true);
+        if (fm) fm.setVolume(0, true);
+
+        const engine = createAudioEngine();
+        if (engine && engine.context.state === "running") {
+          try {
+            await engine.context.suspend();
+          } catch (_) {}
+        }
+
+        // Receivers, WebSockets, decoders and their jitter buffers are retained.
+        uiPlayButton.textContent = "▶";
+        setUIConnection("Stream paused", "");
+        updateMediaSession();
+      }
+
+      async function switchStation(stationName) {
+        if (stationName === currentStation) return;
+
+        const previousStation = currentStation;
+        currentStation = stationName;
         updateUI();
         updateMediaSession();
-        setUIConnection("Preparing AM + FM...", "");
-        startMeter(() => { });
+        showStationToast(stationName);
 
-        // Connect both streams on page load. No audible playback starts here.
-        connectReceivers();
+        const previous = getReceiver(previousStation);
+        const next = getReceiver(currentStation);
 
-        // Intentionally shown on every reload. No permission state is persisted.
-        showAudioPermission();
+        if (!audioReady) {
+          setUIConnection(
+            next && next.connected
+              ? "Ready • " + currentStation
+              : "Connecting • " + currentStation,
+            "",
+          );
+          return;
+        }
 
-        window.GMARadio = {
-            start: startRadio,
-            pause: pauseRadio,
-            switchStation,
-            getAMReceiver: () => amReceiver,
-            getFMReceiver: () => fmReceiver
-        };
+        try {
+          if (!next.prepared) {
+            await next.prepareAudio();
+          }
+
+          if (!next.connected) next.connect();
+
+          const volume = Number(uiVolume.value);
+          previous.setVolume(0, true);
+          next.setVolume(volume, true);
+
+          setUIConnection("LIVE • " + currentStation, "ok");
+          uiPlayButton.textContent = "❚❚";
+        } catch (_) {
+          setUIConnection("Unable to switch station", "err");
+        }
+      }
+
+      uiVolume.addEventListener("input", () => {
+        const receiver = getReceiver();
+        if (audioReady && receiver) {
+          receiver.setVolume(Number(uiVolume.value), false);
+        }
+      });
+
+      uiPlayButton.addEventListener("click", async () => {
+        if (audioReady) {
+          await pauseRadio();
+        } else {
+          await startRadio();
+        }
+      });
+
+      audioPermissionButton.addEventListener("click", async () => {
+        await startRadio();
+      });
+
+      uiAmTab.addEventListener("click", () => switchStation("AM"));
+      uiFmTab.addEventListener("click", () => switchStation("FM"));
+
+      for (let i = 0; i < 55; i++) {
+        const bar = document.createElement("span");
+        bar.className = "wave-bar";
+        bar.style.height = Math.random() * 45 + 8 + "px";
+        bar.style.animationDelay = Math.random() * 0.8 + "s";
+        uiWave.appendChild(bar);
+      }
+
+      createAudioEngine();
+      createReceivers();
+      updateUI();
+      updateMediaSession();
+      setUIConnection("Preparing AM + FM...", "");
+      startMeter(() => {});
+
+      // Connect both streams on page load. No audible playback starts here.
+      connectReceivers();
+
+      // Intentionally shown on every reload. No permission state is persisted.
+      showAudioPermission();
+
+      window.GMARadio = {
+        start: startRadio,
+        pause: pauseRadio,
+        switchStation,
+        getAMReceiver: () => amReceiver,
+        getFMReceiver: () => fmReceiver,
+      };
     </script>
-</body>
-
+  </body>
 </html>
