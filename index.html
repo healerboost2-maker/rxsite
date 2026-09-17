@@ -105,7 +105,7 @@
             box-shadow: 0 0 12px #ff2340;
             animation: pulse 1.3s infinite
         }
-
+        
         @keyframes pulse {
             50% {
                 opacity: .35;
@@ -565,8 +565,12 @@
 
             const toast = document.createElement("div");
             toast.className = "station-toast";
-            toast.innerHTML =
-                `<div class="station-toast-card"><strong>${station.id}</strong><span>${station.name}</span></div>`;
+            toast.innerHTML = `
+    <div class="station-toast-card">
+        <img src="/assets/broadcast_signal.svg" class="broadcast-icon" alt="">
+        <span> You are listening to <strong>${station.name}</strong></span>
+    </div>
+`;
 
             stationToastContainer.prepend(toast);
 

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 938.59 677.99">
+
+    <style>
+        .signal {
+            fill: #ed2024;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .center {
+            animation: centerPulse 1.4s ease-in-out infinite;
+        }
+
+        .inner {
+            animation: signalPulse 1.4s ease-in-out infinite;
+        }
+
+        .outer {
+            animation: signalPulse 1.4s ease-in-out infinite;
+            animation-delay: .25s;
+        }
+
+        @keyframes centerPulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .65;
+                transform: scale(.88);
+            }
+        }
+
+        @keyframes signalPulse {
+            0%, 100% {
+                opacity: .35;
+                transform: scale(.94);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+
+    <g>
+        <path class="signal outer"
+            d="M86.88,339.44A381.34,381.34,0,0,1,205.33,62.73L145.21,0C55.74,85.47,0,205.94,0,339.44A468,468,0,0,0,144.3,678l60.11-62.71A381.35,381.35,0,0,1,86.88,339.44Z"/>
+
+        <path class="signal inner"
+            d="M322.94,185.43,261.48,121.3a301.27,301.27,0,0,0-.91,435.4L322,492.58a212.45,212.45,0,0,1,.91-307.15Z"/>
+
+        <path class="signal center"
+            d="M469.29,209.62a129.84,129.84,0,1,0,89.59,35.86A129.49,129.49,0,0,0,469.29,209.62Z"/>
+
+        <path class="signal inner"
+            d="M677.52,121.69l-61.46,64.14A212.43,212.43,0,0,1,617,492.18l61.48,64.12a301.27,301.27,0,0,0-.93-434.61Z"/>
+
+        <path class="signal outer"
+            d="M793.79.4,733.68,63.11a382.41,382.41,0,0,1,.91,551.76l60.12,62.72A469.31,469.31,0,0,0,793.79.4Z"/>
+    </g>
+</svg>
